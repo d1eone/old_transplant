@@ -11,8 +11,92 @@ Goals:
 #4 Align with newer version of REDCap
 #5 Export data and unite with NEW REDCap project/data.
 
-```{r}
-plot(cars)
+```{r Define Herlihy Domains}
+Herlihy_domains = c("Herlihy_demos","Herlihy_CC","Herlihy_Symptom_Severity","Herlihy_Symptom_Severity","Herlihy_Symptom_Oxygen","Herlihy_AcuteAxacerbations","Herlihy_DC_symptoms","Herlihy_Symptom_Constitutional","Herlihy_CardPulm","Herlihy_Symptoms_Digestive","Herlihy_Rheumatology","Herlihy_Skin","Herlihy_Allergies","Herlihy_SocialHistory_TobaccoHx","Herlihy_SocialHistory_EtOH_drugs","Herlihy_SocialHistory_Lifestyle","Herlihy_research_admin")
+
+Herlihy_demos = c("record_id_0","first_name","last_name","address","telephone_1",
+                  "telephone_2","referrring_physician","first_name1","last_name2",
+                  "telephone","physician_address","email",
+                  "brigham_and_womens_hospital_number",
+                  "list_any_other_physicians_you_are_currently_see","date_of_birth_0",
+                  "place_of_birth","birth_address","sex","ethnic_group")
+Herlihy_CC = c("what_are_the_main_concerns_that_prompted_your_visit_today")
+
+Herlihy_Symptom_Severity = c("do_you_usually_have_a_cough","do_you_usually_bring_up_phlegm_from_your_chest","have_you_had_a_cough_with_phlegm_on_most_days_for_at_least_3_months_per_year_for_the_past_two_years","do_you_ever_cough_up_blood","do_you_get_short_of_breath","do_you_get_short_of_breath_when_you_are_climbing_stairs","how_many_steps_can_you_climb_before_you_get_short_of_breath",
+"for_how_long_have_you_been_short_of_breath","how_far_can_you_walk_on_a_flat_surface_before_you_become_short_of_breath","are_you_short_of_breath_when_showering_or_dressing_cooking_or_doing_light_housework","do_you_require_assistance_with_these_activities_showering_dressing_cooking_or_light_house_work")
+
+Herlihy_Symptom_Oxygen = c("do_you_need_to_use_oxygen","do_you_need_to_use_oxygen_with_exercise",
+"how_many_liters_per_minute_of_oxygen_do_you_need_during_exercise",
+"do_you_need_to_use_oxygen_with_sleep",
+"how_many_liters_per_minute_of_oxygen_do_you_need_during_sleep",
+"do_you_need_to_use_oxygen_at_rest",
+"how_many_liters_per_minute_of_oxygen_do_you_need_during_rest",
+"how_long_have_you_been_using_oxygen_",
+"do_you_use_either_of_the_following_for_breathing_assistance_with_sleep_or_during_the_day")
+
+Herlihy_AcuteAxacerbations = c("year_have_you_been_to_the_emergency_room_or_hospitalized_for_lung_problems",
+"emergency_room_or_hospitalized_for_lung_problems_in_the_past_year",
+"in_the_past_year_an_intensive_care_unit_icu_for_your_breathing",
+"how_many_times_in_an_intensive_care_unit_icu_for_your_breathing_in_the_past_year",
+"in_the_past_year_have_you_been_placed_on_a_breathing_machine_for_your_lung_disease",
+"how_many_times_have_you_been_placed_on_a_breathing_machine_for_your_lung_disease_in_the_past_year","in_the_past_year_have_you_been_treated_with_antibiotics_for_a_chest_illness",
+"how_many_times_have_you_been_treated_with_antibiotics_for_a_chest_illness_in_the_past_year_","treated_with_steroid_pills_or_injections_such_as_prednisone_or_solumedrol_for_a_chest_illness","times_steroid_pills_or_injections_for_a_chest_illness_in_the_past_year",
+"have_you_ever_had_any_chest_operations","what_type_of_chest_operation_have_you_had")
+
+Herlihy_DC_symptoms = c("do_you_have_fever",
+"do_you_have_chills","do_you_have_sweats","do_you_sweat_during_the_night",
+"do_you_get_headaches","do_you_notice_any_change_in_your_in_your_vision_beforeduringafter_the_headaches","do_you_notice_any_numbness_or_weakness_beforeduringafter_the_headaches",
+"do_you_notice_any_fever_or_stiff_neck_with_your_headaches","have_you_had_nausea_or_vomiting_of_food_or_fluids","do_you_suffer_from_constipation","for_how_long_have_you_been_tired",
+"do_you_feel_tired_all_day","have_you_noticed_any_change_in_your_mood","have_you_noticed_any_change_in_your_concentration","have_you_noticed_any_change_in_you_sexual_desire",
+"have_you_noticed_any_change_in_interests","do_you_have_abnormal_sleep","how_many_hours_per_night_do_you_sleep","do_you_nap_during_the_day","how_many_hours_do_you_nap_for","previous_hospitalizations_andor_surgeries","previous_hospitalizations_and_or_surgeries","have_you_had_any_allergic_reaction_to_food","please_specify_the_food_you_have_had_allergic_reaction_to","what_type_of_work_do_you_do","have_you_ever_been_exposed_to_environmental_hazards",
+"what_have_you_been_exposed_to","how_many_times_per_week_do_you_exercise","have_you_ever_been_vaccinated_against_influenza","have_you_ever_received_the_pneumonia_vaccine",
+"please_fill_out_the_chart_below_on_your_family_history_of_each_illness","going_for_walks_or_walking_the_dog","doing_activities_or_chores_at_home_or_in_the_garden","having_sexual_intercourse","going_to_church_or_a_place_of_entertainment","going_out_in_bad_weather_or_into_smoky_rooms","visiting_family_or_friends_or_playing_with_children","lungrespiratory_problem_may_stop_you_from_doing","describes_how_your_breathing_problem_affects_you")
+
+Herlihy_Symptom_Constitutional = c("have_you_noticed_any_change_with_your_weight_in_the_last_year","did_you_lose_weight_or_gain_weight_in_the_last_year","how_many_pounds_did_you_gainlose","over_what_period_of_time_did_your_weight_change_","was_the_weight_gainloss_intentional","have_you_been_tired")
+
+Herlihy_CardPulm = c("do_you_have_to_prop_yourself_up_on_pillows_to_sleep_at_night",
+"have_you_noticed_any_fluid_retention_around_your_ankles")
+
+Herlihy_Symptoms_Digestive = c("do_you_have_heartburn","does_food_or_drink_get_stuck_when_you_are_eating_or_do_you_have_difficulty_swallowing","do_you_cough_or_choke_when_eating","do_you_have_pain_with_taking_a_deep_breath")
+
+Herlihy_Rheumatology = c(
+"do_you_have_any_painful_joints_in_your_body","have_you_ever_felt_morning_stiffness",
+"have_you_noticed_any_rash","have_you_felt_muscle_weakness",
+"have_you_had_canker_sores_in_your_mouth","has_your_skineyes_been_dry",
+"have_you_noticed_dry_mouth","do_you_suffer_from_recurrent_nose_bleeds",
+"do_you_suffer_from_sinus_pain_or_recurrent_sinus_infections",
+"have_you_ever_had_painful_or_swollen_joints","do_you_have_muscle_weakness",
+"has_it_become_difficult_to_open_your_mouth")
+
+Herlihy_Skin = c(
+  "do_you_burn_easily_in_the_sun","do_your_hands_turn_white_blur_or_red_in_the_cold",
+"does_cold_temperature_bother_you","have_you_been_losing_your_hair")
+
+Herlihy_Allergies = c(
+  "have_you_had_any_allergic_reaction","have_you_had_any_allergic_reaction_to_medications",
+"please_specify_the_medications_you_have_had_allergic_reaction_to","have_you_had_any_allergic_reaction_to_dust","have_you_had_any_allergic_reaction_to_","please_specify_which_you_have_had_allergic_reaction_to","other_allergies")
+
+Herlihy_SocialHistory_TobaccoHx = c("have_you_ever_smoked_cigarettes",
+"at_what_age_did_you_start_smoking_regularly",
+"on_average_how_many_packs_per_day_did_you_smoke",
+"are_you_smoking_cigarettes_now",
+"at_what_age_did_you_stop_smoking_cigarettes",
+"have_you_ever_smoked_cigars",
+"on_average_how_many_cigars_per_day",
+"are_you_smoking_cigars_now",
+"have_you_ever_smoked_tobacco_using_a_pipe",
+"how_many_times_dodid_you_smoke_tobacco_using_a_pipe_per_day",
+"are_you_smoking_a_pipe_now",
+"does_anyone_besides_you_regularly_smoke_within_your_home")
+
+Herlihy_SocialHistory_EtOH_drugs = c("do_you_drink_alcohol",
+"how_many_drinks_do_you_have_per_week","do_you_drink_alcohol",
+"how_many_drinks_do_you_have_per_week")
+
+Herlihy_SocialHistory_Lifestyle = c("do_you_exercise_regularly","what_type_of_exercise_do_you_do","have_you_ever_owned_any_birds","have_you_ever_owned_other_pets")
+
+Herlihy_research_admin = c("receiving_information_regarding_our_research_activities",
+"interst_in_studies_at_bwh")
 ```
 
 Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
