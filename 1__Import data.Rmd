@@ -99,6 +99,144 @@ Herlihy_research_admin = c("receiving_information_regarding_our_research_activit
 "interst_in_studies_at_bwh")
 ```
 
+```{r Define PGC Domains}
+PGC_demos = c("patient_name","date_of_birth","age","form_completed_by","relationship_to_patient")
+
+PGC_symptoms = c("reasons_for_visit","patient_following_symptoms___0","patient_following_symptoms___1","patient_following_symptoms___2","patient_following_symptoms___3","patient_following_symptoms___4","patient_following_symptoms___5","patient_following_symptoms___6",
+"patient_following_symptoms___7","patient_following_symptoms___8","patient_following_symptoms___9","patient_following_symptoms___10","patient_following_symptoms___11","patient_following_symptoms___12","how_long_symptoms","additional_symptoms1___0","additional_symptoms1___1","additional_symptoms1___2","additional_symptoms1___3","additional_symptoms2___0","additional_symptoms2___1","additional_symptoms2___2","additional_symptoms2___3","additional_symptoms2___4","additional_symptoms3___0","additional_symptoms3___1","additional_symptoms3___2","additional_symptoms3___3","additional_symptoms4___0","additional_symptoms4___1","additional_symptoms4___2","additional_symptoms4___3","additional_symptoms5___0","additional_symptoms5___1","additional_symptoms6___0","additional_symptoms6___1","additional_symptoms6___2","additional_symptoms6___3","additional_symptoms7","how_many_medical_problems1___1","how_many_medical_problems1___2","how_many_medical_problems1___3","how_many_medical_problems2___0","how_many_medical_problems2___1","how_many_medical_problems2___2","how_many_medical_problems2___3",
+"how_many_medical_problems2___4","how_many_medical_problems2___5","how_many_medical_problems2___6","how_many_medical_problems2___7","how_many_medical_problems2___8","how_many_medical_problems2___9","how_many_medical_problems2___10","how_many_medical_problems2___11",
+"how_many_medical_problems2___12","how_many_medical_problems2___13","how_many_medical_problems2___14","how_many_medical_problems2___15","how_many_medical_problems2___16",
+"how_many_medical_problems2___17","how_many_medical_problems2___18","how_many_medical_problems3___0","how_many_medical_problems3___1","how_many_medical_problems3___2","how_many_medical_problems3___3","how_many_medical_problems3___4","how_many_medical_problems3___5",
+"how_many_medical_problems4___0","how_many_medical_problems4___1","how_many_medical_problems4___2","how_many_medical_problems5___0","how_many_medical_problems5___1","how_many_medical_problems5___2","how_many_medical_problems5___3","how_many_medical_problems5___4","how_many_medical_problems6___0","how_many_medical_problems6___1","how_many_medical_problems6___2",
+"how_many_medical_problems6___3","how_many_medical_problems6___4","how_many_medical_problems7___0","how_many_medical_problems7___1","how_many_medical_problems7___2","how_many_medical_problems7___3","how_many_medical_problems7___4","how_many_medical_problems8___0","how_many_medical_problems8___1","how_many_medical_problems8___2","how_many_medical_problems8___3",
+"how_many_medical_problems8___4","how_many_medical_problems8___5","how_many_medical_problems9___0","how_many_medical_problems9___1","how_many_medical_problems9___2","how_many_medical_problems9___3","how_many_medical_problems9___4","how_many_medical_problems10___0","how_many_medical_problems10___1","how_many_medical_problems10___2")
+
+
+PGC_Other_med_hx = c("patient_allergies___0","patient_allergies___1","patient_allergies___2","patient_allergies___3","patient_vaccines___0","patient_vaccines___1")
+
+PGC_medications = c("current_medications1___0","current_medications2","current_medications3","current_medications4","current_medications5")
+## IF current_medications1___0 = 1 then section complete
+
+PGC_SocialHistory_TobaccoHx = c("tobacco_history1___0","tobacco_history1___1","tobacco_history2","tobacco_history3",
+"tobacco_history4","tobacco_history5___0","tobacco_history5___1","tobacco_history5___2",	"tobacco_history5___3")
+
+PGC_Exposures = c("patients_environment2___0","patients_environment2___1",
+"patients_environment2___2","patients_environment3___0","patients_environment3___1",
+"patients_environment3___2","patients_environment3___3","patients_environment4___0",
+"patients_environment4___1","patients_environment4___2","patients_environment4___3",
+"patients_environment5___0","patients_environment5___1","patients_environment5___2",
+"patients_environment6","patients_environment7")
+
+PGC_Participant_ancestery = c("patient_ancestry1___0","patient_ancestry1___1","patient_ancestry1___2",
+"patient_ancestry1___3","patient_ancestry1___4","patient_ancestry1___5","patient_ancestry1___6","patient_ancestry1___7","patient_ancestry1___8","patient_ancestry1___9",
+"patient_ancestry1___10","patient_ancestry2")
+
+PGC_Mother_ancestery = c("patient_ancestry4","patient_ancestry5","patient_ancestry6",
+"patient_ancestry7","patient_ancestry8","patient_ancestry9")
+
+PGC_template = c("lung_diseases___0","lung_diseases___1","lung_diseases___2","lung_diseases___3","lung_diseases___4","lung_diseases___5","lung_diseases___6","lung_diseases___7",
+"lung_diseases___8","lung_diseases___9","lung_diseases___10","lung_diseases___11","lung_diseases___12","lung_diseases___13","lung_diseases___14","lung_diseases___15","lung_diseases___16","lung_diseases___17","age2___0","age2___1","age2___2","age2___3","age2___4","age2___5",
+"age2___6","age2___7","age2___8","age2___9","age2___10","age2___11","age2___12","elaborate")
+
+PGC_Mother_MedHx = c("biological_parents_chart2___0","biological_parents_chart2___1",
+"biological_parents_chart3","biological_parents_chart4___0","biological_parents_chart4___1",
+"biological_parents_chart5","biological_parents_chart6","biological_parents_chart7")
+
+PGC_Father_ancestery = c("patient_ancestry10","patient_ancestry11","patient_ancestry12",
+"patient_ancestry13","patient_ancestry14","patient_ancestry15")
+
+PGC_Father_MedHx = c("biological_parents_chart8___0","biological_parents_chart8___1",
+"biological_parents_chart9","biological_parents_chart10___0","biological_parents_chart10___1","biological_parents_chart11","biological_parents_chart12","biological_parents_chart13")
+
+PGC_Grandparents_MedHx = c("biological_grandparents_chart2___0","biological_grandparents_chart2___1","biological_grandparents_chart3","biological_grandparents_chart4___0","biological_grandparents_chart4___1",
+"biological_grandparents_chart6","biological_grandparents_chart7","briological_grandparents_chart8","biological_grandparents_chart9___0","biological_grandparents_chart9___1",
+"biological_grandparents_chart10","bological_grandparents_chart11___0","bological_grandparents_chart11___1","biological_grandparents_chart12","biological_grandparents_chart13",
+"biological_grandparents_chart14","biological_grandparents_chart15___0","biological_grandparents_chart15___1","biological_grandparents_chart16","biological_grandparents_chart17___0",
+"biological_grandparents_chart17___1","biological_grandparents_chart18","biological_grandparents_chart19","biological_grandparents_chart20","biological_grandparents_chart21___0",
+"biological_grandparents_chart21___1","biological_grandparents_chart22","biological_grandparents_chart23___0","biological_grandparents_chart23___1","biological_grandparents_chart24",
+"biological_grandparents_chart25","biological_grandparents_chart26")
+
+PGC_Children_MedHx = c("biological_children_chart2","biological_children_chart3___0",
+"biological_children_chart3___1","biological_children_chart4___0","biological_children_chart4___1","biological_children_chart5","biological_children_chart6___0","biological_children_chart6___1","biological_children_chart7","biological_children_chart8","biological_children_chart9","biological_children_chart10","biological_children_chart11___0","biological_children_chart11___1","biological_children_chart12___0","biological_children_chart12___1","biological_children_chart13","biological_children_chart14___0","biological_children_chart14___1","biological_children_chart15","biological_children_chart16","biological_children_chart17","biological_children_chart18","biological_children_chart19___0","biological_children_chart19___1","biological_children_chart20___0","biological_children_chart20___1","biological_children_chart21","biological_children_chart22___0","biological_children_chart22___1","biological_children_chart23","biological_children_chart24","biological_children_chart25","biological_children_chart26","biological_children_chart27___0","biological_children_chart27___1","biological_children_chart28___0","biological_children_chart28___1","biological_children_chart29","biological_children_chart30___0","biological_children_chart30___1","biological_children_chart31","biological_children_chart32","biological_children_chart33","biological_children_chart34","biological_children_chart35___0","biological_children_chart35___1","biological_children_chart36___0","biological_children_chart36___1","biological_children_chart37","biological_children_chart38___0","biological_children_chart38___1","biological_children_chart39","biological_children_chart40","biological_children_chart41")
+
+PGC_Sibling_MedHx = c("biological_siblings_chart2","biological_siblings_chart3___0","biological_siblings_chart3___1","biological_siblings_chart4___0","biological_siblings_chart4___1",
+"biological_siblings_chart5","biological_siblings_chart6___0","biological_siblings_chart6___1","biological_siblings_chart7","biological_siblings_chart8","biological_siblings_chart9",
+"biological_siblings_chart10","biological_siblings_chart11___0","biological_siblings_chart11___1","biological_siblings_chart12___0","biological_siblings_chart12___1","biological_siblings_chart13","biological_siblings_chart14___0","biological_siblings_chart14___1","biological_siblings_chart15","biological_siblings_chart16","biological_siblings_chart17","biological_siblings_chart18","biological_siblings_chart19___0","biological_siblings_chart19___1","biological_siblings_chart20___0","biological_siblings_chart20___1","biological_siblings_chart21",
+"biological_siblings_chart22___0","biological_siblings_chart22___1","biological_siblings_chart23","biological_siblings_chart24","biological_siblings_chart25","biological_siblings_chart26","biological_siblings_chart27___0","biological_siblings_chart27___1",
+"biological_siblings_chart28___0","biological_siblings_chart28___1","biological_siblings_chart29","biological_siblings_chart30___0","biological_siblings_chart30___1","biological_siblings_chart31","biological_siblings_chart32","biological_siblings_chart33","biological_siblings_chart34","biological_siblings_chart35___0","biological_siblings_chart35___1","biological_siblings_chart36___0","biological_siblings_chart36___1","biological_siblings_chart37","biological_siblings_chart38___0","biological_siblings_chart38___1","biological_siblings_chart39",
+"biological_siblings_chart40","biological_siblings_chart41","biological_siblings_chart42___0","biological_siblings_chart42___1","biological_siblings_chart43")
+
+PGC_AuUncle_MedHx = c("biological_aunts_uncles_chart2","biological_aunts_uncles_chart3___0",
+"biological_aunts_uncles_chart3___1","biological_aunts_uncles_chart4___0","biological_aunts_uncles_chart4___1","biological_aunts_uncles_chart5","biological_aunts_uncles_chart6___0",
+"biological_aunts_uncles_chart6___1","biological_aunts_uncles_chart7",
+"biological_aunts_uncles_chart8","biological_aunts_uncles_chart9","biological_aunts_uncles_chart10","biological_aunts_uncles_chart11___0","biological_aunts_uncles_chart11___1",
+"biological_aunts_uncles_chart12___0","biological_aunts_uncles_chart12___1",
+"biological_aunts_uncles_chart13","biological_aunts_uncles_chart14___0",
+"biological_aunts_uncles_chart14___1","biological_aunts_uncles_chart15",
+"biological_aunts_uncles_chart16","biological_aunts_uncles_chart17",
+"biological_aunts_uncles_chart18","biological_aunts_uncles_chart19___0",
+"biological_aunts_uncles_chart19___1","biological_aunts_uncles_chart20___0",
+"biological_aunts_uncles_chart20___1","biological_aunts_uncles_chart21","biological_aunts_uncles_chart22___0","biological_aunts_uncles_chart22___1","biological_aunts_uncles_chart23",
+"biological_aunts_uncles_chart24","biological_aunts_uncles_chart25",
+"biological_aunts_uncles_chart26","biological_aunts_uncles_chart27___0",
+"biological_aunts_uncles_chart27___1","biological_aunts_uncles_chart28___0",
+"biological_aunts_uncles_chart28___1","biological_aunts_uncles_chart29",
+"biological_aunts_uncles_chart30___0","biological_aunts_uncles_chart30___1",
+"biological_aunts_uncles_chart31","biological_aunts_uncles_chart32",
+"biological_aunts_uncles_chart33","biological_aunts_uncles_chart34",
+"biological_aunts_uncles_chart35___0","biological_aunts_uncles_chart35___1",
+"biological_aunts_uncles_chart36___0","biological_aunts_uncles_chart36___1",
+"biological_aunts_uncles_chart37","biological_aunts_uncles_chart38___0",
+"biological_aunts_uncles_chart38___1","biological_aunts_uncles_chart39",
+"biological_aunts_uncles_chart40","biological_aunts_uncles_chart41",
+"biological_aunts_uncles_chart42","biological_aunts_uncles_chart43___0",
+"biological_aunts_uncles_chart43___1","biological_aunts_uncles_chart44___0",
+"biological_aunts_uncles_chart44___1","biological_aunts_uncles_chart45",
+"biological_aunts_uncles_chart46___0","biological_aunts_uncles_chart46___1",
+"biological_aunts_uncles_chart47","biological_aunts_uncles_chart48",
+"biological_aunts_uncles_chart49","biological_aunts_uncles_chart50",
+"biological_aunts_uncles_chart51___0","biological_aunts_uncles_chart51___1",
+"biological_aunts_uncles_chart52___0","biological_aunts_uncles_chart52___1",
+"biological_aunts_uncles_chart53","biological_aunts_uncles_chart54___0",
+"biological_aunts_uncles_chart54___1","biological_aunts_uncles_chart55",
+"biological_aunts_uncles_chart56","biological_aunts_uncles_chart57",
+"biological_aunts_uncles_chart58","biological_aunts_uncles_chart59___0",
+"biological_aunts_uncles_chart59___1","biological_aunts_uncles_chart60___0",
+"biological_aunts_uncles_chart60___1","biological_aunts_uncles_chart61",
+"biological_aunts_uncles_chart62___0","biological_aunts_uncles_chart62___1",
+"biological_aunts_uncles_chart63","biological_aunts_uncles_chart64",
+"biological_aunts_uncles_chart65","biological_aunts_uncles_chart66",
+"biological_aunts_uncles_chart67___0","biological_aunts_uncles_chart67___1",
+"biological_aunts_uncles_chart68___0","biological_aunts_uncles_chart68___1",
+"biological_aunts_uncles_chart69","biological_aunts_uncles_chart70___0",
+"biological_aunts_uncles_chart70___1","biological_aunts_uncles_chart71",
+"biological_aunts_uncles_chart72","biological_aunts_uncles_chart73",
+"biological_aunts_uncles_chart74","biological_aunts_uncles_chart75___0",
+"biological_aunts_uncles_chart75___1","biological_aunts_uncles_chart76___0",
+"biological_aunts_uncles_chart76___1","biological_aunts_uncles_chart77",
+"biological_aunts_uncles_chart78___0","biological_aunts_uncles_chart78___1",
+"biological_aunts_uncles_chart79","biological_aunts_uncles_chart80",
+"biological_aunts_uncles_chart81")
+
+PGC_Other_info = c("other_information1___0","other_information1___1","other_information1___2","other_information2","other_information3")
+```
+
+```{r List of SGRQ-COPD Questions}
+SGRQ_COPD = c("cough_1","cough_2","cough_3","cough_4","cough_5","cough_6","cough_7","cough_8","cough_9","cough_10","shortness_of_breath_2","shortness_of_breath_3","shortness_of_breath_4","shortness_of_breath_5","shortness_of_breath_6","shortness_of_breath_7","shortness_of_breath_8","shortness_of_breath_9","shortness_of_breath_10","shortness_of_breath_11","shortness_of_breath_12","shortness_of_breath_13","shortness_of_breath_14","shortness_of_breath_15",
+"shortness_of_breath_16","shortness_of_breath_17","shortness_of_breath_18","shortness_of_breath_19","shortness_of_breath_20","shortness_of_breath_21","shortness_of_breath_22","shortness_of_breath_23","shortness_of_breath_24","shortness_of_breath_25","shortness_of_breath_26",
+"shortness_of_breath_27","shortness_of_breath_28","shortness_of_breath_29","shortness_of_breath_30","shortness_of_breath_31","shortness_of_breath_32","shortness_of_breath_33","shortness_of_breath_34","shortness_of_breath_35","shortness_of_breath_36","shortness_of_breath_37",
+"shortness_of_breath_38","shortness_of_breath_39","shortness_of_breath_40","shortness_of_breath_41","shortness_of_breath_43","shortness_of_breath_44")
+```
+```{r List of SGRQ-IPF Items}
+SGRQ_IPF = c("cough_11","cough_12","cough_13","cough_14","cough_15","cough_16","shortness_of_breath_47","shortness_of_breath_48","shortness_of_breath_49","shortness_of_breath_50","shortness_of_breath_51","shortness_of_breath_52","shortness_of_breath_53","shortness_of_breath_54","shortness_of_breath_55","shortness_of_breath_56","shortness_of_breath_57","shortness_of_breath_58","shortness_of_breath_59","shortness_of_breath_60","shortness_of_breath_61","shortness_of_breath_62","shortness_of_breath_63","shortness_of_breath_64","shortness_of_breath_65","shortness_of_breath_66","shortness_of_breath_67","shortness_of_breath_68","shortness_of_breath_69","shortness_of_breath_70","shortness_of_breath_71","shortness_of_breath_72","shortness_of_breath_73","shortness_of_breath_74","shortness_of_breath_75")
+```
+
+
+```{r Check BubbleStatus}
+## In REDCap study staff mark complete surveys in the following variable list
+REDCap_complete_flags = c("pulmonary_genetics_center_questionnaire_complete","herlihy_questionnaire_complete","ipf_questionnaire_complete","copd_questionnaire_complete")
+```
+
 Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
 
 When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
