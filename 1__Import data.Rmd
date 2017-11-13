@@ -36,7 +36,7 @@ work.txp = postForm(
     exportDataAccessGroups='false',
     returnFormat='json'
 )
-fromJSON(work.txp)
+txp= fromJSON(work.txp)
 ```
 
 
@@ -271,7 +271,18 @@ REDCap_complete_flags = c("pulmonary_genetics_center_questionnaire_complete","he
 ```
 
 # Loop over all variables in domain
-How many missing?
+How many participants with modules *MARKED* +missing+?
+
+```{r}
+#attach(txp)
+REDCap_table_flags = NULL
+for (varlist in REDCap_complete_flags){
+  REDCap_table_flags[[varlist]]= table(txp[(varlist)])
+  print(REDCap_table_flags[varlist])
+}
+```
+
+
 
 
 Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
