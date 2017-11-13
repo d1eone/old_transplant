@@ -11,6 +11,36 @@ Goals:
 #4 Align with newer version of REDCap
 #5 Export data and unite with NEW REDCap project/data.
 
+h2. Load Libraries and set global constants
+```{r Loading Libraries}
+library(RCurl)
+library(jsonlite)
+```
+```{r Constants and Definitions}
+api_url='https://redcap.partners.org/redcap/api/'
+txp_token= '733D673904E7A34A7BCCFE6B789AC276'
+```
+
+h2. Import JSON data from REDCap using API access
+```{r Data Import module}
+work.txp = postForm(
+    uri= api_url,
+    token= txp_token,
+    content='record',
+    format='json',
+    type='flat',
+    rawOrLabel='raw',
+    rawOrLabelHeaders='raw',
+    exportCheckboxLabel='false',
+    exportSurveyFields='false',
+    exportDataAccessGroups='false',
+    returnFormat='json'
+)
+fromJSON(work.txp)
+```
+
+
+#Create lists of variables per domain and instrument
 ```{r Define Herlihy Domains}
 Herlihy_domains = c("Herlihy_demos","Herlihy_CC","Herlihy_Symptom_Severity","Herlihy_Symptom_Severity","Herlihy_Symptom_Oxygen","Herlihy_AcuteAxacerbations","Herlihy_DC_symptoms","Herlihy_Symptom_Constitutional","Herlihy_CardPulm","Herlihy_Symptoms_Digestive","Herlihy_Rheumatology","Herlihy_Skin","Herlihy_Allergies","Herlihy_SocialHistory_TobaccoHx","Herlihy_SocialHistory_EtOH_drugs","Herlihy_SocialHistory_Lifestyle","Herlihy_research_admin")
 
@@ -99,7 +129,10 @@ Herlihy_research_admin = c("receiving_information_regarding_our_research_activit
 "interst_in_studies_at_bwh")
 ```
 
+
 ```{r Define PGC Domains}
+Herlihy_domains = c("PGC_demos","PGC_Other_med_hx","PGC_template","PGC_medications","PGC_SocialHistory_TobaccoHx","PGC_Exposures","PGC_Participant_ancestery","PGC_Mother_ancestery","PGC_Mother_MedHx", "PGC_Father_ancestery","PGC_Father_MedHx", "PGC_Grandparents_MedHx", "PGC_Children_MedHx", "PGC_Sibling_MedHx", "PGC_AuUncle_MedHx", "PGC_Other_info")
+
 PGC_demos = c("patient_name","date_of_birth","age","form_completed_by","relationship_to_patient")
 
 PGC_symptoms = c("reasons_for_visit","patient_following_symptoms___0","patient_following_symptoms___1","patient_following_symptoms___2","patient_following_symptoms___3","patient_following_symptoms___4","patient_following_symptoms___5","patient_following_symptoms___6",
@@ -232,10 +265,14 @@ SGRQ_IPF = c("cough_11","cough_12","cough_13","cough_14","cough_15","cough_16","
 ```
 
 
-```{r Check BubbleStatus}
+```{r Creates Flags for BubbleStatus in REDCap}
 ## In REDCap study staff mark complete surveys in the following variable list
 REDCap_complete_flags = c("pulmonary_genetics_center_questionnaire_complete","herlihy_questionnaire_complete","ipf_questionnaire_complete","copd_questionnaire_complete")
 ```
+
+# Loop over all variables in domain
+How many missing?
+
 
 Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
 
