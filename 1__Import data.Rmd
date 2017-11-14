@@ -38,11 +38,15 @@ work.txp = postForm(
     returnFormat='json'
 )
 txp= fromJSON(work.txp)
+txp$Transplant = 1
+txp$PGC_Status = txp$pulmonary_genetics_center_questionnaire_complete
+txp$Herlihy_Status = txp$herlihy_questionnaire_complete
+txp$SGRQ_Status = txp$ipf_questionnaire_complete
 ```
 ```{r Data Import module - Clinical Genetics}
 work1.ILD = postForm(
     uri=api_url,
-    token='988B6AE24F596A66026E82D50D0796FB',
+    token=ClinGen_token,
     content='record',
     format='json',
     type='flat',
@@ -89,6 +93,10 @@ ILD_rel2 = merge(ILD_relatives, ILD_pro2, by.x= "FamilyNAME", by.y=
 ILD_pro3$probandID = NA #resets before merge because we dont need this for probands
 ILD_all = rbind(ILD_rel2,ILD_pro3)
 ILD = subset(ILD_all, ILD_all["arm"]=="proband")
+ILD$ClinGen = 1
+ILD$PGC_Status = ILD$pulmonary_genetics_questionnaire_complete
+ILD$Herlihy_Status = ILD$herlihy_questionnaire_complete
+ILD$SGRQ_Status = ILD$st_georges_respiratory_questionnaire_sgrq_complete
 ```
 
 
