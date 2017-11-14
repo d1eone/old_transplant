@@ -19,10 +19,11 @@ library(jsonlite)
 ```{r Constants and Definitions}
 api_url='https://redcap.partners.org/redcap/api/'
 txp_token= '733D673904E7A34A7BCCFE6B789AC276'
+ClinGen_token= '988B6AE24F596A66026E82D50D0796FB'
 ```
 
 h2. Import JSON data from REDCap using API access
-```{r Data Import module}
+```{r Data Import module - Transplant}
 work.txp = postForm(
     uri= api_url,
     token= txp_token,
@@ -37,6 +38,54 @@ work.txp = postForm(
     returnFormat='json'
 )
 txp= fromJSON(work.txp)
+```
+```{r Data Import module - Clinical Genetics}
+work1.ILD = postForm(
+    uri=api_url,
+    token='988B6AE24F596A66026E82D50D0796FB',
+    content='record',
+    format='json',
+    type='flat',
+    'fields[0]'='bwhild_id',
+    'fields[1]'='id',
+    'fields[2]'='mrn',
+    'fields[3]'='familyid',
+    'fields[4]'='familyname',
+    'fields[5]'='demo_last',
+    rawOrLabel='raw',
+    rawOrLabelHeaders='raw',
+    exportCheckboxLabel='false',
+    exportSurveyFields='false',
+    exportDataAccessGroups='false',
+    returnFormat='json',
+    filterLogic='[icf_signature(4)] = 1'
+)
+
+work2.ILD = fromJSON(work1.ILD)
+work2.ILD$arm = ifelse(work2.ILD$redcap_event_name == "screening_arm_1","proband",
+                 ifelse(work2.ILD$redcap_event_name == "screening_arm_2","relatives","ERROR"))
+work2.ILD$ClinicalGeneticsStudy = TRUE
+work2.ILD$LastName = toupper(work2.ILD$demo_last)
+work2.ILD$FamilyNAME = toupper(work2.ILD$familyname)
+work2.ILD$MRN = work2.ILD$mrn
+work2.ILD$FamilyID = work2.ILD$familyid
+work2.ILD$id[work2.ILD$id == ""] = work2.ILD$bwhild_id[work2.ILD$id == ""] #replaces missing values of "id" using values from "bwhwork2.ILD_id"
+work2.ILD = work2.ILD[,!(names(work2.ILD) %in% c("mrn","familyid","familyname","demo_last"))] #drops original variables not capitalized
+#work2.ILD$ProbandID[,work2.ILD$arm == "relatives"] = work2.ILD$id[,work2.ILD$arm == "proband" & work2.ILD$]
+
+ILD_relatives = subset(work2.ILD, work2.ILD$arm == "relatives")
+DF_FamilyIDs = unique(ILD_relatives[c("FamilyNAME","FamilyID")])
+ILD_probands = subset(work2.ILD,work2.ILD$arm == "proband")
+ILD_probands = ILD_probands[,!(names(ILD_probands) %in% c("FamilyID"))] #drops unused variable FamilyILD
+ILD_probands$probandID = ILD_probands$id
+ILD_pro2 = ILD_probands[c("probandID","LastName")]
+ILD_pro2$LastName[ILD_pro2$LastName == "BURHAM"] = "BURNHAM" #corrects mispelling of name
+ILD_pro3 = merge(ILD_probands, DF_FamilyIDs, by.x = "LastName", by.y = "FamilyNAME",all = TRUE)
+ILD_rel2 = merge(ILD_relatives, ILD_pro2, by.x= "FamilyNAME", by.y=
+              "LastName", all.x= TRUE)
+ILD_pro3$probandID = NA #resets before merge because we dont need this for probands
+ILD_all = rbind(ILD_rel2,ILD_pro3)
+ILD = subset(ILD_all, ILD_all["arm"]=="proband")
 ```
 
 
@@ -64,7 +113,7 @@ Herlihy_Symptom_Oxygen = c("do_you_need_to_use_oxygen","do_you_need_to_use_oxyge
 "how_long_have_you_been_using_oxygen_",
 "do_you_use_either_of_the_following_for_breathing_assistance_with_sleep_or_during_the_day")
 
-Herlihy_AcuteAxacerbations = c("year_have_you_been_to_the_emergency_room_or_hospitalized_for_lung_problems",
+Herlihy_AcuteExacerbations = c("year_have_you_been_to_the_emergency_room_or_hospitalized_for_lung_problems",
 "emergency_room_or_hospitalized_for_lung_problems_in_the_past_year",
 "in_the_past_year_an_intensive_care_unit_icu_for_your_breathing",
 "how_many_times_in_an_intensive_care_unit_icu_for_your_breathing_in_the_past_year",
@@ -273,8 +322,7 @@ REDCap_complete_flags = c("pulmonary_genetics_center_questionnaire_complete","he
 # Loop over all variables in domain
 How many participants with modules *MARKED* +missing+?
 
-```{r}
-#attach(txp)
+```{r Creates table of Bubble-Status from REDCap}
 REDCap_table_flags = NULL
 for (varlist in REDCap_complete_flags){
   REDCap_table_flags[[varlist]]= table(txp[(varlist)])
@@ -283,6 +331,14 @@ for (varlist in REDCap_complete_flags){
 ```
 
 
+```{r}
+Herlihy_Completeness_Rheum = NULL
+for (varlist in Herlihy_Rheumatology){
+  Herlihy_Completeness_Rheum[[varlist]]= table(txp[(varlist)])
+  print(Herlihy_Completeness_Rheum[varlist])
+  txp$Herli_Rheum= ifelse (is.na(txp[(varlist)]), 1,0)
+}
+```
 
 
 Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
