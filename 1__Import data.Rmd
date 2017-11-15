@@ -386,6 +386,34 @@ for (varlist in Herlihy_Rheumatology){
 Merge in Pulmonary Genetics *ILD* data
 ```{r}
 ALL_Txp = merge(txp, ILD, by= "MRN", all.x = TRUE)
+ALL_Txp$PGC_Status = ifelse(is.na(ALL_Txp$PGC_Status.x),
+                            ifelse(is.na(ALL_Txp$PGC_Status.y),0,ALL_Txp$PGC_Status.y),
+                            ALL_Txp$PGC_Status.x)
+ALL_Txp$Herlihy_Status = ifelse(is.na(ALL_Txp$Herlihy_Status.x),
+                        ifelse(is.na(ALL_Txp$Herlihy_Status.y),0,ALL_Txp$Herlihy_Status.y),
+                            ALL_Txp$Herlihy_Status.x)
+ALL_Txp$SGRQ_Status = ifelse(is.na(ALL_Txp$SGRQ_Status.x),
+                             ifelse(is.na(ALL_Txp$SGRQ_Status.y),0,
+                                    ALL_Txp$SGRQ_Status.y),
+                             ifelse(ALL_Txp$SGRQ_Status.x == 0,
+                                    ifelse(!is.na(ALL_Txp$Herlihy_Status.y),
+                                           ALL_Txp$Herlihy_Status.y,ALL_Txp$Herlihy_Status.x),
+                                    ALL_Txp$Herlihy_Status.x))
+```
+
+### How many Missing ... how many complete by Survey instrument?   
+#### PGC
+```{r}
+table(ALL_Txp$PGC_Status)
+```
+#### Herlihy
+```{r}
+table(ALL_Txp$Herlihy_Status)
+```
+
+#### SGRQ
+```{r}
+table(ALL_Txp$SGRQ_Status)
 ```
 
 
