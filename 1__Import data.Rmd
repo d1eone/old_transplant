@@ -11,7 +11,7 @@ Goals:
 #4 Align with newer version of REDCap
 #5 Export data and unite with NEW REDCap project/data.
 
-h2. Load Libraries and set global constants
+## Load Libraries and set global constants
 ```{r Loading Libraries}
 library(RCurl)
 library(jsonlite)
@@ -22,8 +22,8 @@ txp_token= '733D673904E7A34A7BCCFE6B789AC276'
 ClinGen_token= '988B6AE24F596A66026E82D50D0796FB'
 PPMR_token= '5D09F30900B9FA4EFA667E684D22B8C1'
 ```
-
-h2. Import JSON data from REDCap using API access
+# PPMR Data from REDCap
+## Import JSON data from REDCap using API access
 ```{r Data Import module - PPMR}
 work.PPMR = postForm(
     uri=api_url,
@@ -51,8 +51,8 @@ KEEP = c("PPMR_ID","TransplantID","MRN","TransplantStudy")
 PPMR = PPMR[KEEP]
 ```
 
-
-
+# Transplant Study Data from *OLD* REDCap DB
+## Imports JSON data using API
 ```{r Data Import module - Transplant}
 work.txp1 = postForm(
     uri= api_url,
@@ -72,9 +72,13 @@ temp.txp = work.txp2[c("record_id","pulmonary_genetics_center_questionnaire_comp
 temp.txp$Transplant = 1
 temp.txp$PGC_Status = temp.txp$pulmonary_genetics_center_questionnaire_complete
 temp.txp$Herlihy_Status = temp.txp$herlihy_questionnaire_complete
-temp.txp$SGRQ_Status = temp.txp$ipf_questionnaire_complete
+temp.txp$SGRQ_Status = ifelse(temp.txp$ipf_questionnaire_complete == 2 | temp.txp$copd_questionnaire_complete == 2, 2,0)
 txp = merge(temp.txp, PPMR, by.x = "record_id", by.y = "PPMR_ID", all.y = TRUE)
+KEEP = c("MRN","TransplantID","PGC_Status","Herlihy_Status","SGRQ_Status","TransplantStudy")
+txp = txp[KEEP]
 ```
+# Clinical Genetics Study Data
+## Imports JSON data using API
 ```{r Data Import module - Clinical Genetics}
 work1.ILD = postForm(
     uri=api_url,
@@ -129,10 +133,12 @@ ILD$ClinGen = 1
 ILD$PGC_Status = ILD$pulmonary_genetics_questionnaire_complete
 ILD$Herlihy_Status = ILD$herlihy_questionnaire_complete
 ILD$SGRQ_Status = ILD$st_georges_respiratory_questionnaire_sgrq_complete
+KEEP = c("MRN","id","PGC_Status","Herlihy_Status","SGRQ_Status","ClinicalGeneticsStudy")
+ILD = ILD[KEEP]
 ```
 
 
-#Create lists of variables per domain and instrument
+# Create lists of variables per domain and instrument
 ```{r Define Herlihy Domains}
 Herlihy_domains = c("Herlihy_demos","Herlihy_CC","Herlihy_Symptom_Severity","Herlihy_Symptom_Severity","Herlihy_Symptom_Oxygen","Herlihy_AcuteAxacerbations","Herlihy_DC_symptoms","Herlihy_Symptom_Constitutional","Herlihy_CardPulm","Herlihy_Symptoms_Digestive","Herlihy_Rheumatology","Herlihy_Skin","Herlihy_Allergies","Herlihy_SocialHistory_TobaccoHx","Herlihy_SocialHistory_EtOH_drugs","Herlihy_SocialHistory_Lifestyle","Herlihy_research_admin")
 
@@ -387,21 +393,64 @@ Merge in Pulmonary Genetics *ILD* data
 ```{r}
 ALL_Txp = merge(txp, ILD, by= "MRN", all.x = TRUE)
 ALL_Txp$PGC_Status = ifelse(is.na(ALL_Txp$PGC_Status.x),
-                            ifelse(is.na(ALL_Txp$PGC_Status.y),0,ALL_Txp$PGC_Status.y),
-                            ALL_Txp$PGC_Status.x)
+                             ifelse(is.na(ALL_Txp$PGC_Status.y),0,
+                                    ALL_Txp$PGC_Status.y),
+                             ifelse(ALL_Txp$PGC_Status.x == 0,
+                                    ifelse(!is.na(ALL_Txp$PGC_Status.y),
+                                           ALL_Txp$PGC_Status.y,ALL_Txp$PGC_Status.x),
+                                    ALL_Txp$PGC_Status.x))
+
 ALL_Txp$Herlihy_Status = ifelse(is.na(ALL_Txp$Herlihy_Status.x),
-                        ifelse(is.na(ALL_Txp$Herlihy_Status.y),0,ALL_Txp$Herlihy_Status.y),
-                            ALL_Txp$Herlihy_Status.x)
+                             ifelse(is.na(ALL_Txp$Herlihy_Status.y),0,
+                                    ALL_Txp$Herlihy_Status.y),
+                             ifelse(ALL_Txp$Herlihy_Status.x == 0,
+                                    ifelse(!is.na(ALL_Txp$Herlihy_Status.y),
+                                           ALL_Txp$Herlihy_Status.y,ALL_Txp$Herlihy_Status.x),
+                                    ALL_Txp$Herlihy_Status.x))
+
 ALL_Txp$SGRQ_Status = ifelse(is.na(ALL_Txp$SGRQ_Status.x),
                              ifelse(is.na(ALL_Txp$SGRQ_Status.y),0,
                                     ALL_Txp$SGRQ_Status.y),
                              ifelse(ALL_Txp$SGRQ_Status.x == 0,
-                                    ifelse(!is.na(ALL_Txp$Herlihy_Status.y),
-                                           ALL_Txp$Herlihy_Status.y,ALL_Txp$Herlihy_Status.x),
-                                    ALL_Txp$Herlihy_Status.x))
+                                    ifelse(!is.na(ALL_Txp$SGRQ_Status.y),
+                                           ALL_Txp$SGRQ_Status.y,ALL_Txp$SGRQ_Status.x),
+                                    ALL_Txp$SGRQ_Status.x))
+ALL_Txp$AnyMissingSurvey = ifelse((ALL_Txp$SGRQ_Status == 0 | ALL_Txp$Herlihy_Status==0 |ALL_Txp$PGC_Status ==0),
+                                  1,0)
+```
+## Shared with ClinGen
+```{r}
+table(ALL_Txp$TransplantStudy[is.na(ALL_Txp$ClinicalGeneticsStudy)])
 ```
 
-### How many Missing ... how many complete by Survey instrument?   
+
+## MISSING
+
+### How many missing in Transplant DB (n=208)
+#### Totally Complete vs missing at least one survey
+```{r}
+missing_txp_surveys = ifelse(txp$PGC_Status == 0 | txp$Herlihy_Status ==  0 | txp$SGRQ_Status == 0, 1,0)
+missing_txp_surveys[is.na(missing_txp_surveys)] = 1
+table(missing_txp_surveys)
+```
+
+
+
+### Of the 124 missing from Transplant REDCap ... how many in ClinGen?  
+
+#### Totally Complete vs missing at least one survey
+```{r}
+table(ALL_Txp$AnyMissingSurvey)
+```
+
+#### Of those 130 missing at least one survey, how many are in ClinGen?
+
+```{r}
+table(ALL_Txp$AnyMissingSurvey[ALL_Txp$ClinicalGeneticsStudy])
+```
+* 40/130 (31%) enrolled in both
+
+### How many TOTALLY complete, how many missing by Survey instrument? 
 #### PGC
 ```{r}
 table(ALL_Txp$PGC_Status)
@@ -415,7 +464,10 @@ table(ALL_Txp$Herlihy_Status)
 ```{r}
 table(ALL_Txp$SGRQ_Status)
 ```
+```{r Output Report}
+write.csv(ALL_Txp,"/Volumes/redle/Projects/PPMI/Reports/Transplant_SurveyTRACKING.csv")
 
+```
 
 
 
