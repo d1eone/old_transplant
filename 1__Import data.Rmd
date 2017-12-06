@@ -18,7 +18,7 @@ library(jsonlite)
 ```
 ```{r Constants and Definitions}
 api_url='https://redcap.partners.org/redcap/api/'
-txp_token= '733D673904E7A34A7BCCFE6B789AC276'
+txp_token1= '733D673904E7A34A7BCCFE6B789AC276'
 ClinGen_token= '988B6AE24F596A66026E82D50D0796FB'
 PPMR_token= '5D09F30900B9FA4EFA667E684D22B8C1'
 ```
@@ -34,6 +34,10 @@ work.PPMR = postForm(
     'fields[0]'='subject_id',
     'fields[1]'='log_transplant_id',
     'fields[2]'='mrn_log',
+    'fields[3]' = 'email_log',
+
+    'fields[5]' = 'email_log',
+    'fields[6]' = 'log_wd_transplant',
     rawOrLabel='raw',
     rawOrLabelHeaders='raw',
     exportCheckboxLabel='false',
@@ -47,11 +51,20 @@ PPMR$TransplantStudy = TRUE
 PPMR$MRN = PPMR$mrn_log 
 PPMR$TransplantID = PPMR$log_transplant_id
 PPMR$PPMR_ID = PPMR$subject_id
-KEEP = c("PPMR_ID","TransplantID","MRN","TransplantStudy")
+PPMR$email_log[PPMR$email_log == ""] = NA
+PPMR$email = PPMR$email_log
+PPMR$Deceased = PPMR$log_wd_transplant
+
+PPMR$emailAVAIL = ifelse(!is.na(PPMR$email_log),1,0)
+KEEP = c("PPMR_ID","TransplantID","MRN","TransplantStudy","emailAVAIL", "email","Deceased")
 PPMR = PPMR[KEEP]
 ```
 
 # Transplant Study Data from *OLD* REDCap DB
+
+
+
+
 ## Imports JSON data using API
 ```{r Data Import module - Transplant}
 work.txp1 = postForm(
@@ -73,10 +86,75 @@ temp.txp$Transplant = 1
 temp.txp$PGC_Status = temp.txp$pulmonary_genetics_center_questionnaire_complete
 temp.txp$Herlihy_Status = temp.txp$herlihy_questionnaire_complete
 temp.txp$SGRQ_Status = ifelse(temp.txp$ipf_questionnaire_complete == 2 | temp.txp$copd_questionnaire_complete == 2, 2,0)
-txp = merge(temp.txp, PPMR, by.x = "record_id", by.y = "PPMR_ID", all.y = TRUE)
-KEEP = c("MRN","TransplantID","PGC_Status","Herlihy_Status","SGRQ_Status","TransplantStudy")
-txp = txp[KEEP]
+
 ```
+
+```{r PPMI Transplant Study REDCap}
+work.txp_temp3 <- postForm(
+    uri='https://redcap.partners.org/redcap/api/',
+    token='F693D1C3E97B6F591F9A3CF50B40B1F2',
+    content='record',
+    format='json',
+    type='flat',
+    'fields[0]'='transplant_id',
+    'fields[1]'='elig_dx',
+    'fields[2]'='herlihy_questionnaire_complete',
+    'fields[3]'='pgc_supplemental_questionnaire_pgcqs_complete',
+    'fields[4]'='pulmonary_genetics_center_questionnaire_pgcq_complete',
+    'fields[5]'='st_georges_questionnaire_sgrq_copd_complete',
+    'fields[6]'='st_georges_questionnaire_sgrqiipf_complete',
+    'events[0]'='baseline_arm_1',
+    rawOrLabel='raw',
+    rawOrLabelHeaders='raw',
+    exportCheckboxLabel='false',
+    exportSurveyFields='false',
+    exportDataAccessGroups='false',
+    returnFormat='json'
+)
+work.txp3= fromJSON(work.txp_temp3)
+work.txp3$PGCS_Status = work.txp3$pgc_supplemental_questionnaire_pgcqs_complete
+work.txp3$PGC_Status = work.txp3$pulmonary_genetics_center_questionnaire_pgcq_complete
+work.txp3$Herlihy_Status = work.txp3$herlihy_questionnaire_complete
+work.txp3$SGRQ_Status = ifelse(work.txp3$st_georges_questionnaire_sgrqiipf_complete== 2 | work.txp3$st_georges_questionnaire_sgrq_copd_complete== 2, 2,0)
+work.txp3$TransplantID = work.txp3$transplant_id
+```
+```{r Creates PPMI transplant DB}
+txp_A = merge(temp.txp, PPMR, by.x = "record_id", by.y = "PPMR_ID", all.y = TRUE)
+txp = merge(txp_A, work.txp3, by ="TransplantID", all.x = TRUE)
+
+txp$PGC_Status = ifelse(is.na(txp$PGC_Status.x),
+                             ifelse(is.na(txp$PGC_Status.y),0,
+                                    txp$PGC_Status.y),
+                             ifelse(txp$PGC_Status.x == 0,
+                                    ifelse(!is.na(txp$PGC_Status.y),
+                                           txp$PGC_Status.y,txp$PGC_Status.x),
+                                    txp$PGC_Status.x))
+
+txp$Herlihy_Status = ifelse(is.na(txp$Herlihy_Status.x),
+                             ifelse(is.na(txp$Herlihy_Status.y),0,
+                                    txp$Herlihy_Status.y),
+                             ifelse(txp$Herlihy_Status.x == 0,
+                                    ifelse(!is.na(txp$Herlihy_Status.y),
+                                           txp$Herlihy_Status.y,txp$Herlihy_Status.x),
+                                    txp$Herlihy_Status.x))
+
+txp$SGRQ_Status = ifelse(is.na(txp$SGRQ_Status.x),
+                             ifelse(is.na(txp$SGRQ_Status.y),0,
+                                    txp$SGRQ_Status.y),
+                             ifelse(txp$SGRQ_Status.x == 0,
+                                    ifelse(!is.na(txp$SGRQ_Status.y),
+                                           txp$SGRQ_Status.y,txp$SGRQ_Status.x),
+                                    txp$SGRQ_Status.x))
+
+
+KEEP = c("TransplantID","MRN","PGC_Status","Herlihy_Status","SGRQ_Status","PGCS_Status","TransplantStudy","emailAVAIL","email","elig_dx","Deceased")
+txp = txp[KEEP]
+
+# txp = merge(temp.txp, PPMR, by.x = "record_id", by.y = "PPMR_ID", all.y = TRUE)
+# KEEP = c("MRN","TransplantID","PGC_Status","Herlihy_Status","SGRQ_Status","TransplantStudy","emailAVAIL","email")
+# txp = txp[KEEP]
+```
+
 # Clinical Genetics Study Data
 ## Imports JSON data using API
 ```{r Data Import module - Clinical Genetics}
@@ -417,6 +495,8 @@ ALL_Txp$SGRQ_Status = ifelse(is.na(ALL_Txp$SGRQ_Status.x),
                                     ALL_Txp$SGRQ_Status.x))
 ALL_Txp$AnyMissingSurvey = ifelse((ALL_Txp$SGRQ_Status == 0 | ALL_Txp$Herlihy_Status==0 |ALL_Txp$PGC_Status ==0),
                                   1,0)
+KEEP = c("TransplantID","MRN","PGC_Status","Herlihy_Status","SGRQ_Status","PGCS_Status","TransplantStudy","emailAVAIL","email","elig_dx","Deceased")
+ALL_Txp = ALL_Txp[KEEP]
 ```
 ## Shared with ClinGen
 ```{r}
@@ -470,10 +550,8 @@ write.csv(ALL_Txp,"/Volumes/redle/Projects/PPMI/Reports/Transplant_SurveyTRACKIN
 ```
 
 
-
-Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
-
-When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
-
-The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+# EXPORT 
+```{r}
+write.csv(ALL_Txp,"/Users/redle/Dropbox (Partners HealthCare)/Channing/PPMI/Data/Survey Audits/MISSING_QC.csv")
+```
 
