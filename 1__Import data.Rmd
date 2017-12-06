@@ -495,7 +495,7 @@ ALL_Txp$SGRQ_Status = ifelse(is.na(ALL_Txp$SGRQ_Status.x),
                                     ALL_Txp$SGRQ_Status.x))
 ALL_Txp$AnyMissingSurvey = ifelse((ALL_Txp$SGRQ_Status == 0 | ALL_Txp$Herlihy_Status==0 |ALL_Txp$PGC_Status ==0),
                                   1,0)
-KEEP = c("TransplantID","MRN","PGC_Status","Herlihy_Status","SGRQ_Status","PGCS_Status","TransplantStudy","emailAVAIL","email","elig_dx","Deceased")
+KEEP = c("TransplantID","MRN","PGC_Status","Herlihy_Status","SGRQ_Status","PGCS_Status","TransplantStudy","emailAVAIL","email","elig_dx","Deceased","AnyMissingSurvey")
 ALL_Txp = ALL_Txp[KEEP]
 ```
 ## Shared with ClinGen
@@ -552,6 +552,15 @@ write.csv(ALL_Txp,"/Volumes/redle/Projects/PPMI/Reports/Transplant_SurveyTRACKIN
 
 # EXPORT 
 ```{r}
-write.csv(ALL_Txp,"/Users/redle/Dropbox (Partners HealthCare)/Channing/PPMI/Data/Survey Audits/MISSING_QC.csv")
+ALL_Txp$PGC_Status = factor(ALL_Txp$PGC_Status, labels = c("Missing","OK"))
+ALL_Txp$SGRQ_Status = factor(ALL_Txp$SGRQ_Status, labels = c("Missing","OK")) 
+#ALL_Txp$PGCS_Status = factor(ALL_Txp$PGCS_Status, labels = c("Missing","OK"))
+ALL_Txp$Herlihy_Status = factor(ALL_Txp$Herlihy_Status, labels = c("Missing","OK"))
+ALL_Txp$Deceased[ALL_Txp$Deceased == ""] = 999
+ALL_Txp$Deceased = factor(ALL_Txp$Deceased, labels = c("INACTIVE","IE","DECEASED","active"))
+ALL_Txp$Herlihy_Status = factor(ALL_Txp$Herlihy_Status, labels = c("Missing","OK"))
+ALL_Txp$AnyMissingSurvey = factor(ALL_Txp$AnyMissingSurvey, labels = c("Missing","OK"))
+ALL_Txp$elig_dx = factor(ALL_Txp$elig_dx, labels = c("UNKNOWN","IPF","COPD"))
+write.csv(ALL_Txp,"/Users/redle/Dropbox (Partners HealthCare)/Channing/PPMI/Data/Survey Audits/MISSING_QC.csv",row.names = FALSE)
 ```
 
