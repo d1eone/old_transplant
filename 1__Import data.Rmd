@@ -12,7 +12,7 @@ Goals:
 #5 Export data and unite with NEW REDCap project/data.
 
 ## Load Libraries and set global constants
-```{r Loading Libraries}
+```{r Loading Libraries, echo=FALSE}
 library(RCurl)
 library(jsonlite)
 ```
