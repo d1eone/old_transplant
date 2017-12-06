@@ -556,10 +556,11 @@ ALL_Txp$PGC_Status = factor(ALL_Txp$PGC_Status, labels = c("Missing","OK"))
 ALL_Txp$SGRQ_Status = factor(ALL_Txp$SGRQ_Status, labels = c("Missing","OK")) 
 #ALL_Txp$PGCS_Status = factor(ALL_Txp$PGCS_Status, labels = c("Missing","OK"))
 ALL_Txp$Herlihy_Status = factor(ALL_Txp$Herlihy_Status, labels = c("Missing","OK"))
+ALL_Txp$emailAVAIL= factor(ALL_Txp$emailAVAIL, labels = c("No","YES"))
 ALL_Txp$Deceased[ALL_Txp$Deceased == ""] = 999
 ALL_Txp$Deceased = factor(ALL_Txp$Deceased, labels = c("INACTIVE","IE","DECEASED","active"))
 ALL_Txp$Herlihy_Status = factor(ALL_Txp$Herlihy_Status, labels = c("Missing","OK"))
-ALL_Txp$AnyMissingSurvey = factor(ALL_Txp$AnyMissingSurvey, labels = c("Missing","OK"))
+ALL_Txp$AnyMissingSurvey = factor(ALL_Txp$AnyMissingSurvey, labels = c("OK","Missing"))
 ALL_Txp$elig_dx = factor(ALL_Txp$elig_dx, labels = c("UNKNOWN","IPF","COPD"))
 write.csv(ALL_Txp,"/Users/redle/Dropbox (Partners HealthCare)/Channing/PPMI/Data/Survey Audits/MISSING_QC.csv",row.names = FALSE)
 ```
