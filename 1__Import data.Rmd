@@ -1,5 +1,5 @@
 ---
-title: "OLD Transplant Data Notebook"
+title: "Imports OLD Transplant Data Rnotebook"
 output: html_notebook
 ---
 
@@ -33,11 +33,6 @@ work.PPMR = postForm(
     type='flat',
     'fields[0]'='subject_id',
     'fields[1]'='log_transplant_id',
-    'fields[2]'='mrn_log',
-    'fields[3]' = 'email_log',
-
-    'fields[5]' = 'email_log',
-    'fields[6]' = 'log_wd_transplant',
     rawOrLabel='raw',
     rawOrLabelHeaders='raw',
     exportCheckboxLabel='false',
@@ -47,29 +42,19 @@ work.PPMR = postForm(
     filterLogic='[transplant_cons(1)] = 1'
 )
 PPMR = fromJSON(work.PPMR)
-PPMR$TransplantStudy = TRUE
-PPMR$MRN = PPMR$mrn_log 
 PPMR$TransplantID = PPMR$log_transplant_id
 PPMR$PPMR_ID = PPMR$subject_id
-PPMR$email_log[PPMR$email_log == ""] = NA
-PPMR$email = PPMR$email_log
-PPMR$Deceased = PPMR$log_wd_transplant
 
-PPMR$emailAVAIL = ifelse(!is.na(PPMR$email_log),1,0)
-KEEP = c("PPMR_ID","TransplantID","MRN","TransplantStudy","emailAVAIL", "email","Deceased")
+KEEP = c("PPMR_ID","TransplantID")
 PPMR = PPMR[KEEP]
 ```
 
 # Transplant Study Data from *OLD* REDCap DB
-
-
-
-
 ## Imports JSON data using API
 ```{r Data Import module - Transplant}
 work.txp1 = postForm(
     uri= api_url,
-    token= txp_token,
+    token= txp_token1,
     content='record',
     format='json',
     type='flat',
@@ -80,12 +65,9 @@ work.txp1 = postForm(
     exportDataAccessGroups='false',
     returnFormat='json'
 )
-work.txp2= fromJSON(work.txp1)
-temp.txp = work.txp2[c("record_id","pulmonary_genetics_center_questionnaire_complete","herlihy_questionnaire_complete","ipf_questionnaire_complete","copd_questionnaire_complete")]
-temp.txp$Transplant = 1
-temp.txp$PGC_Status = temp.txp$pulmonary_genetics_center_questionnaire_complete
-temp.txp$Herlihy_Status = temp.txp$herlihy_questionnaire_complete
-temp.txp$SGRQ_Status = ifelse(temp.txp$ipf_questionnaire_complete == 2 | temp.txp$copd_questionnaire_complete == 2, 2,0)
+txp1= fromJSON(work.txp1)
+
+
 
 ```
 
