@@ -6,8 +6,8 @@ output: html_notebook
 
 ```{r adds TransplantID to old REDCap db}
 txp = merge(txp1, PPMR, by.x = "record_id", by.y= "PPMR_ID", all.x= TRUE)
-REDCap = data.frame(
-  TransplantID = as.character(txp$TransplantID))
+#REDCap = data.frame(
+  txp$TransplantID = as.character(txp$TransplantID)
 ```
 
 
@@ -19,22 +19,22 @@ REDCap = data.frame(
 * QUESTION #1
 ```{r parsing free-text for keywords to categorize chief complaint}
 txp$what_are_the_main_concerns_that_prompted_your_visit_today[txp$what_are_the_main_concerns_that_prompted_your_visit_today == "N/A"] = NA
-REDCap$herli_cc = ifelse(txp$what_are_the_main_concerns_that_prompted_your_visit_today == "",NA,ifelse(grepl ("SOB",toupper(txp$what_are_the_main_concerns_that_prompted_your_visit_today)) | grepl ("SHORTNESS",toupper(txp$what_are_the_main_concerns_that_prompted_your_visit_today)) | grepl ("BREATH",toupper(txp$what_are_the_main_concerns_that_prompted_your_visit_today)), 1, ifelse (grepl ("COUGH", toupper(txp$what_are_the_main_concerns_that_prompted_your_visit_today)),2, ifelse(                     grepl("OXYGEN",toupper(txp$what_are_the_main_concerns_that_prompted_your_visit_today)),3,99))))
+txp$herli_cc = ifelse(txp$what_are_the_main_concerns_that_prompted_your_visit_today == "",NA,ifelse(grepl ("SOB",toupper(txp$what_are_the_main_concerns_that_prompted_your_visit_today)) | grepl ("SHORTNESS",toupper(txp$what_are_the_main_concerns_that_prompted_your_visit_today)) | grepl ("BREATH",toupper(txp$what_are_the_main_concerns_that_prompted_your_visit_today)), 1, ifelse (grepl ("COUGH", toupper(txp$what_are_the_main_concerns_that_prompted_your_visit_today)),2, ifelse(                     grepl("OXYGEN",toupper(txp$what_are_the_main_concerns_that_prompted_your_visit_today)),3,99))))
 
-REDCap$cc_spec = ifelse(REDCap$herli_cc == 99, txp$what_are_the_main_concerns_that_prompted_your_visit_today,NA)
+txp$cc_spec = ifelse(REDCap$herli_cc == 99, txp$what_are_the_main_concerns_that_prompted_your_visit_today,NA)
 ```
 
 * One disease that brought you to clinic?
 * herli_cc_disease
 * QUESTION #2
 ```{r parsing free-text for keywords to categorize ONE DISEASE}
-REDCap$herli_cc_disease = ifelse(txp$what_are_the_main_concerns_that_prompted_your_visit_today == "",NA, ifelse(grepl("COPD",toupper(txp$what_are_the_main_concerns_that_prompted_your_visit_today)) | grepl("EMPHYSEMA",toupper(txp$what_are_the_main_concerns_that_prompted_your_visit_today)) | grepl("OBSTRUCTIVE",toupper(txp$what_are_the_main_concerns_that_prompted_your_visit_today)), 1,
+txp$herli_cc_disease = ifelse(txp$what_are_the_main_concerns_that_prompted_your_visit_today == "",NA, ifelse(grepl("COPD",toupper(txp$what_are_the_main_concerns_that_prompted_your_visit_today)) | grepl("EMPHYSEMA",toupper(txp$what_are_the_main_concerns_that_prompted_your_visit_today)) | grepl("OBSTRUCTIVE",toupper(txp$what_are_the_main_concerns_that_prompted_your_visit_today)), 1,
                       ifelse(grepl("ASTHMA",toupper(txp$what_are_the_main_concerns_that_prompted_your_visit_today)),2,
                       ifelse(grepl("PAH",toupper(txp$what_are_the_main_concerns_that_prompted_your_visit_today)) | grepl("HYPERTENSION",toupper(txp$what_are_the_main_concerns_that_prompted_your_visit_today)) | grepl("PRESSURE",toupper(txp$what_are_the_main_concerns_that_prompted_your_visit_today)),3,
                       ifelse(grepl("FIBROSIS",toupper(txp$what_are_the_main_concerns_that_prompted_your_visit_today)) | grepl("IPF",toupper(txp$what_are_the_main_concerns_that_prompted_your_visit_today)),6,
                       ifelse(grepl("TRANSPLANT",toupper(txp$what_are_the_main_concerns_that_prompted_your_visit_today)) | grepl("PRE-TRANS",toupper(txp$what_are_the_main_concerns_that_prompted_your_visit_today)) ,5, 99))))))
 
-REDCap$cc_disease_spec = ifelse(REDCap$herli_cc_disease == 99, txp$what_are_the_main_concerns_that_prompted_your_visit_today,NA)
+txp$cc_disease_spec = ifelse(REDCap$herli_cc_disease == 99, txp$what_are_the_main_concerns_that_prompted_your_visit_today,NA)
 ```
 
 #### Number of Steps
