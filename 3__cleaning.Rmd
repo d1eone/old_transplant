@@ -37,6 +37,26 @@ txp$herli_cc_disease = ifelse(txp$what_are_the_main_concerns_that_prompted_your_
 txp$cc_disease_spec = ifelse(REDCap$herli_cc_disease == 99, txp$what_are_the_main_concerns_that_prompted_your_visit_today,NA)
 ```
 
+#### Do you usually have a cough? 
+* CHANGES REQ - <blanks exist>
+* do_you_usually_have_a_cough *OLD*
+* cough_yn *NEW*
+```{r OLD-21 NEW-92}
+txp$cough_yn = txp$do_you_usually_have_a_cough
+txp$cough_yn[txp$cough_yn == ""] = NA
+```
+
+
+
+#### Do you usually bring up phlemgm fro your chest?
+* CHANGES REQ - <blanks exist>
+* do_you_usually_bring_up_phlegm_from_your_chest *OLD*
+* phlegm_yn *NEW*
+* LOGIC ERRORS - recode phlegm = "Yes" WHEN cough = "No" ==> chg/2 NA
+```{r}
+txp$phlegm_yn = txp$do_you_usually_bring_up_phlegm_from_your_chest
+txp$phlegm_yn[txp$phlegm_yn == "" | txp$cough_yn == 0] = NA
+```
 #### Number of Steps
 ```{r}
 txp$how_many_steps_can_you_climb_before_you_get_short_of_breath[txp$how_many_steps_can_you_climb_before_you_get_short_of_breath == "" | txp$how_many_steps_can_you_climb_before_you_get_short_of_breath == "N/A"] =NA
