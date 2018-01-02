@@ -1,0 +1,66 @@
+---
+title: "Cleaner Notebook"
+output: html_notebook
+---
+
+
+```{r adds TransplantID to old REDCap db}
+txp = merge(txp1, PPMR, by.x = "record_id", by.y= "PPMR_ID", all.x= TRUE)
+REDCap = data.frame(
+  txpTransplantID = as.character(txp$TransplantID))
+```
+
+
+# HERLIHY
+## History of Present Illness
+### Symptoms
+* Chief complaint
+* herli_cc
+* QUESTION #1
+```{r parsing free-text for keywords to categorize chief complaint}
+txp$what_are_the_main_concerns_that_prompted_your_visit_today[txp$what_are_the_main_concerns_that_prompted_your_visit_today == "N/A"] = NA
+REDCap$herli_cc = ifelse(txp$what_are_the_main_concerns_that_prompted_your_visit_today == "",NA,ifelse(grepl ("SOB",toupper(txp$what_are_the_main_concerns_that_prompted_your_visit_today)) | grepl ("SHORTNESS",toupper(txp$what_are_the_main_concerns_that_prompted_your_visit_today)) | grepl ("BREATH",toupper(txp$what_are_the_main_concerns_that_prompted_your_visit_today)), 1, ifelse (grepl ("COUGH", toupper(txp$what_are_the_main_concerns_that_prompted_your_visit_today)),2, ifelse(                     grepl("OXYGEN",toupper(txp$what_are_the_main_concerns_that_prompted_your_visit_today)),3,99))))
+
+REDCap$cc_spec = ifelse(REDCap$herli_cc == 99, txp$what_are_the_main_concerns_that_prompted_your_visit_today,NA)
+```
+
+* One disease that brought you to clinic?
+* herli_cc_disease
+* QUESTION #2
+```{r parsing free-text for keywords to categorize ONE DISEASE}
+REDCap$herli_cc_disease = ifelse(txp$what_are_the_main_concerns_that_prompted_your_visit_today == "",NA, ifelse(grepl("COPD",toupper(txp$what_are_the_main_concerns_that_prompted_your_visit_today)) | grepl("EMPHYSEMA",toupper(txp$what_are_the_main_concerns_that_prompted_your_visit_today)) | grepl("OBSTRUCTIVE",toupper(txp$what_are_the_main_concerns_that_prompted_your_visit_today)), 1,
+                      ifelse(grepl("ASTHMA",toupper(txp$what_are_the_main_concerns_that_prompted_your_visit_today)),2,
+                      ifelse(grepl("PAH",toupper(txp$what_are_the_main_concerns_that_prompted_your_visit_today)) | grepl("HYPERTENSION",toupper(txp$what_are_the_main_concerns_that_prompted_your_visit_today)) | grepl("PRESSURE",toupper(txp$what_are_the_main_concerns_that_prompted_your_visit_today)),3,
+                      ifelse(grepl("FIBROSIS",toupper(txp$what_are_the_main_concerns_that_prompted_your_visit_today)) | grepl("IPF",toupper(txp$what_are_the_main_concerns_that_prompted_your_visit_today)),6,
+                      ifelse(grepl("TRANSPLANT",toupper(txp$what_are_the_main_concerns_that_prompted_your_visit_today)) | grepl("PRE-TRANS",toupper(txp$what_are_the_main_concerns_that_prompted_your_visit_today)) ,5, 99))))))
+
+REDCap$cc_disease_spec = ifelse(REDCap$herli_cc_disease == 99, txp$what_are_the_main_concerns_that_prompted_your_visit_today,NA)
+```
+
+#### Number of Steps
+```{r}
+txp$how_many_steps_can_you_climb_before_you_get_short_of_breath[txp$how_many_steps_can_you_climb_before_you_get_short_of_breath == "" | txp$how_many_steps_can_you_climb_before_you_get_short_of_breath == "N/A"] =NA
+```
+* 1st CHECK if txp$do_you_get_short_of_breath == 1
+** IF yes then
+
+*** 1st check For specific answers:
+1. "5-10" >> 2
+2. "About 3" >> 1
+3. "lot" >> 4
+4. "gillette" >> 4 
+5. "after 5 steps" >> 2
+6. "Don't know" >> 4
+
+*** THEN IF answer contains "flights" then parse first 2 chars as digits - multiply by 10 (10 steps/flight)
+
+*** OTHERWISE, extract first 2 chars as numeric
+
+* 0 - 4 >> 1
+* 5 - 9 >> 2
+* 10 - 14 >> 3
+* 15+ >> 4
+
+** IF does not get SHORT OF BREATH, Then 
+
+*** set REDCap$climb_steps = NA
