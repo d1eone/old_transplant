@@ -69,7 +69,7 @@ PPMR = PPMR[KEEP]
 ```{r Data Import module - Transplant}
 work.txp1 = postForm(
     uri= api_url,
-    token= txp_token,
+    token= txp_token1,
     content='record',
     format='json',
     type='flat',
@@ -81,11 +81,6 @@ work.txp1 = postForm(
     returnFormat='json'
 )
 txp1 = fromJSON(work.txp1)
-temp.txp = work.txp2[c("record_id","pulmonary_genetics_center_questionnaire_complete","herlihy_questionnaire_complete","ipf_questionnaire_complete","copd_questionnaire_complete")]
-temp.txp$Transplant = 1
-temp.txp$PGC_Status = temp.txp$pulmonary_genetics_center_questionnaire_complete
-temp.txp$Herlihy_Status = temp.txp$herlihy_questionnaire_complete
-temp.txp$SGRQ_Status = ifelse(temp.txp$ipf_questionnaire_complete == 2 | temp.txp$copd_questionnaire_complete == 2, 2,0)
 
 ```
 
