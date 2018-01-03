@@ -60,8 +60,24 @@ txp$phlegm_yn[txp$phlegm_yn == "" | txp$cough_yn == 0] = NA
 txp$phlegm_yn = txp$txp$have_you_had_a_cough_with_phlegm_on_most_days_for_at_least_3_months_per_year_for_the_past_two_years
 txp$cough_phlegm[txp$cough_phlegm == "" | txp$cough_yn == 0] = NA
 ```
-#### Number of Steps
+
+#### Do you ever cough up blood?
 ```{r}
+txp$cough_blood = txp$do_you_ever_cough_up_blood
+txp$cough_blood[txp$cough_blood == "" | txp$cough_yn == 0] = NA
+```
+
+#### Do you get short of breath?
+```{r}
+txp$short_breath = txp$do_you_get_short_of_breath
+txp$short_breath[txp$short_breath == ""] = NA
+```
+
+
+
+#### Number of Steps
+
+```{r Recode N/A to NA}
 txp$how_many_steps_can_you_climb_before_you_get_short_of_breath[txp$how_many_steps_can_you_climb_before_you_get_short_of_breath == "" | txp$how_many_steps_can_you_climb_before_you_get_short_of_breath == "N/A"] =NA
 ```
 * 1st CHECK if txp$do_you_get_short_of_breath == 1
