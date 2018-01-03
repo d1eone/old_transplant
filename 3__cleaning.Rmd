@@ -27,7 +27,7 @@ txp$cc_spec = ifelse(REDCap$herli_cc == 99, txp$what_are_the_main_concerns_that_
 * One disease that brought you to clinic?
 * herli_cc_disease
 * QUESTION #2
-```{r parsing free-text for keywords to categorize ONE DISEASE}
+```{r parsing free_text for keywords to categorize ONE DISEASE}
 txp$herli_cc_disease = ifelse(txp$what_are_the_main_concerns_that_prompted_your_visit_today == "",NA, ifelse(grepl("COPD",toupper(txp$what_are_the_main_concerns_that_prompted_your_visit_today)) | grepl("EMPHYSEMA",toupper(txp$what_are_the_main_concerns_that_prompted_your_visit_today)) | grepl("OBSTRUCTIVE",toupper(txp$what_are_the_main_concerns_that_prompted_your_visit_today)), 1,
                       ifelse(grepl("ASTHMA",toupper(txp$what_are_the_main_concerns_that_prompted_your_visit_today)),2,
                       ifelse(grepl("PAH",toupper(txp$what_are_the_main_concerns_that_prompted_your_visit_today)) | grepl("HYPERTENSION",toupper(txp$what_are_the_main_concerns_that_prompted_your_visit_today)) | grepl("PRESSURE",toupper(txp$what_are_the_main_concerns_that_prompted_your_visit_today)),3,
@@ -56,6 +56,9 @@ txp$cough_yn[txp$cough_yn == ""] = NA
 ```{r}
 txp$phlegm_yn = txp$do_you_usually_bring_up_phlegm_from_your_chest
 txp$phlegm_yn[txp$phlegm_yn == "" | txp$cough_yn == 0] = NA
+# Have you had a cough with phlegm on most days for at least 3 mo over last 2 years?
+txp$phlegm_yn = txp$txp$have_you_had_a_cough_with_phlegm_on_most_days_for_at_least_3_months_per_year_for_the_past_two_years
+txp$cough_phlegm[txp$cough_phlegm == "" | txp$cough_yn == 0] = NA
 ```
 #### Number of Steps
 ```{r}
