@@ -3,10 +3,6 @@ title: "Cleaner Notebook"
 output: html_notebook
 ---
 
-```{r List of SGRQ vars}
-loopover = c()
-```
-
 
 ```{r adds TransplantID to old REDCap db}
 txp = merge(txp1, PPMR, by.x = "record_id", by.y= "PPMR_ID", all.x= TRUE)
