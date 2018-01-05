@@ -154,14 +154,17 @@ txp$climb_steps = ifelse(txp$short_breath == 0 | txp$herlihy_questionnaire_compl
 * if answered, add +1 to response (matches new REDCap)
 
 ```{r Aligns Symptom questions ADDS 1}
-c("sgrq_symptoms1","sgrq_sgrq_symptoms2","sgrq_symptoms3","sgrq_symptoms4","sgrq_sob1","sgrq_sob2","sgrq_sob3","sgrq_sob4","sgrq_sob5","sgrq_sob6","sgrq_sob7","sgrq_sob8","sgrq_sob9","sgrq_sob10","sgrq_sob11","sgrq_sob12","sgrq_sob13","sgrq_sob14","sgrq_sob15","sgrq_sob16","sgrq_sob17","sgrq_sob18","sgrq_sob19","sgrq_sob20","sgrq_sob21","sgrq_sob_treatments","sgrq_treatment1","sgrq_treatment2","sgrq_treatment3","sgrq_sob22","sgrq_sob23","sgrq_sob24","sgrq_sob25","sgrq_sob26","sgrq_sob27","sgrq_sob28","sgrq_sob29",
+loopOVER = c("sgrq_symptoms1","sgrq_sgrq_symptoms2","sgrq_symptoms3","sgrq_symptoms4","sgrq_sob1","sgrq_sob2","sgrq_sob3","sgrq_sob4","sgrq_sob5","sgrq_sob6","sgrq_sob7","sgrq_sob8","sgrq_sob9","sgrq_sob10","sgrq_sob11","sgrq_sob12","sgrq_sob13","sgrq_sob14","sgrq_sob15","sgrq_sob16","sgrq_sob17","sgrq_sob18","sgrq_sob19","sgrq_sob20","sgrq_sob21","sgrq_sob_treatments","sgrq_treatment1","sgrq_treatment2","sgrq_treatment3","sgrq_sob22","sgrq_sob23","sgrq_sob24","sgrq_sob25","sgrq_sob26","sgrq_sob27","sgrq_sob28","sgrq_sob29",
 "sgrq_sob30","sgrq_sob31","sgrq_sob32","sgrq_sob33","sgrq_sob34","sgrq_sob35","sgrq_sob36")
 
+for (varlist in loopOVER){
+  txp[varlist] = as.factor(as.integer(txp[[varlist]]) +1)
+}
 
-txp$sgrq_symptoms1 = (as.integer(txp$sgrq_symptoms1) +1)
-txp$sgrq_sgrq_symptoms2 = as.factor(as.integer(txp$sgrq_sgrq_symptoms2) +1)
-txp$sgrq_symptoms3 = as.factor(as.integer(txp$sgrq_symptoms3) + 1)
-txp$sgrq_symptoms4 = as.factor(as.integer(txp$cough_4) + 1)
+
+#txp$sgrq_sgrq_symptoms2 = as.factor(as.integer(txp$sgrq_sgrq_symptoms2) +1)
+#txp$sgrq_symptoms3 = as.factor(as.integer(txp$sgrq_symptoms3) + 1)
+#txp$sgrq_symptoms4 = as.factor(as.integer(txp$cough_4) + 1)
 ```
 
 
