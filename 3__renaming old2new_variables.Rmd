@@ -1,0 +1,59 @@
+---
+title: "Rename Notebook"
+output: html_notebook
+---
+
+```{r Renames SGRQ variables}
+txp$sgrq_symptoms1 = txp$cough_1
+txp$sgrq_sgrq_symptoms2 = txp$cough_2
+txp$sgrq_symptoms3 = txp$cough_3
+txp$sgrq_symptoms4 = txp$cough_4
+txp$sgrq_symptoms5 = txp$cough_5
+txp$sgrq_symptoms6 = txp$cough_6
+txp$sgrq_symptoms7 = txp$cough_7
+txp$sgrq_symptoms8 = txp$cough_8
+txp$sgrq_symptoms9 = txp$cough_9
+txp$sgrq_job = txp$cough_10
+txp$sgrq_sob1 = txp$shortness_of_breath_2
+txp$sgrq_sob2 = txp$shortness_of_breath_3
+txp$sgrq_sob3 = txp$shortness_of_breath_4
+txp$sgrq_sob4 = txp$shortness_of_breath_5
+txp$sgrq_sob5 = txp$shortness_of_breath_6
+txp$sgrq_sob6 = txp$shortness_of_breath_7
+txp$sgrq_sob7 = txp$shortness_of_breath_8
+txp$sgrq_sob8 = txp$shortness_of_breath_9
+txp$sgrq_sob9 = txp$shortness_of_breath_10
+txp$sgrq_sob10 = txp$shortness_of_breath_11
+txp$sgrq_sob11 = txp$shortness_of_breath_12
+txp$sgrq_sob12 = txp$shortness_of_breath_13
+txp$sgrq_sob13 = txp$shortness_of_breath_14
+txp$sgrq_sob14 = txp$shortness_of_breath_15
+txp$sgrq_sob15 = txp$shortness_of_breath_16
+txp$sgrq_sob16 = txp$shortness_of_breath_17
+txp$sgrq_sob17 = txp$shortness_of_breath_18
+txp$sgrq_sob18 = txp$shortness_of_breath_19
+txp$sgrq_sob19 = txp$shortness_of_breath_20
+txp$sgrq_sob20 = txp$shortness_of_breath_21
+txp$sgrq_sob21 = txp$shortness_of_breath_22
+txp$sgrq_sob_treatments = txp$shortness_of_breath_23
+txp$sgrq_treatment1 = txp$shortness_of_breath_24
+txp$sgrq_treatment2 = txp$shortness_of_breath_25
+txp$sgrq_treatment3 = txp$shortness_of_breath_26
+txp$sgrq_sob22 = txp$shortness_of_breath_27
+txp$sgrq_sob23 = txp$shortness_of_breath_28
+txp$sgrq_sob24 = txp$shortness_of_breath_29
+txp$sgrq_sob25 = txp$shortness_of_breath_30
+txp$sgrq_sob26 = txp$shortness_of_breath_31
+txp$sgrq_sob27 = txp$shortness_of_breath_32
+txp$sgrq_sob28 = txp$shortness_of_breath_33
+txp$sgrq_sob29 = txp$shortness_of_breath_34
+txp$sgrq_sob30 = txp$shortness_of_breath_35
+txp$sgrq_sob31 = txp$shortness_of_breath_36
+txp$sgrq_sob32 = txp$shortness_of_breath_37
+txp$sgrq_sob33 = txp$shortness_of_breath_38
+txp$sgrq_sob34 = txp$shortness_of_breath_39
+txp$sgrq_sob35 = txp$shortness_of_breath_40
+txp$sgrq_sob36 = txp$shortness_of_breath_41
+txp$affects_copd = txp$shortness_of_breath_44
+```
+
