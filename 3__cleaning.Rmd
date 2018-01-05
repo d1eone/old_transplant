@@ -161,10 +161,6 @@ for (varlist in loopOVER){
   txp[varlist] = as.factor(as.integer(txp[[varlist]]) +1)
 }
 
-
-#txp$sgrq_sgrq_symptoms2 = as.factor(as.integer(txp$sgrq_sgrq_symptoms2) +1)
-#txp$sgrq_symptoms3 = as.factor(as.integer(txp$sgrq_symptoms3) + 1)
-#txp$sgrq_symptoms4 = as.factor(as.integer(txp$cough_4) + 1)
 ```
 
 
