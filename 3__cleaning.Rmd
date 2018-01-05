@@ -78,8 +78,49 @@ txp$short_breath[txp$short_breath == ""] = NA
 #### Number of Steps
 
 ```{r Recode N/A to NA}
-txp$how_many_steps_can_you_climb_before_you_get_short_of_breath[txp$how_many_steps_can_you_climb_before_you_get_short_of_breath == "" | txp$how_many_steps_can_you_climb_before_you_get_short_of_breath == "N/A"] =NA
+txp$how_many_steps_can_you_climb_before_you_get_short_of_breath[txp$how_many_steps_can_you_climb_before_you_get_short_of_breath == "" | txp$how_many_steps_can_you_climb_before_you_get_short_of_breath == "N/A"] = NA
 ```
+
+```{r}
+txp$climb_steps = ifelse(txp$short_breath == 0 | txp$herlihy_questionnaire_complete == 0,
+  NA,
+  ifelse(txp$how_many_steps_can_you_climb_before_you_get_short_of_breath %in%  c("4-5", "About 3"),
+    1,
+    ifelse(txp$how_many_steps_can_you_climb_before_you_get_short_of_breath %in% c("after 5 steps","5-10"),
+      2,
+      ifelse(txp$how_many_steps_can_you_climb_before_you_get_short_of_breath == "10 steps",
+        3,
+        ifelse(grepl("gillette",tolower(txp$how_many_steps_can_you_climb_before_you_get_short_of_breath)),
+          4,
+          ifelse(grepl("flight",tolower(txp$how_many_steps_can_you_climb_before_you_get_short_of_breath)),
+            ifelse(as.integer(substr(txp$how_many_steps_can_you_climb_before_you_get_short_of_breath,1,1)) > 1,
+              4,
+              3
+            ),
+            ifelse(substr(txp$how_many_steps_can_you_climb_before_you_get_short_of_breath,1,1) %in% letters | substr(txp$how_many_steps_can_you_climb_before_you_get_short_of_breath,1,1) %in% LETTERS, 
+              -999,
+              ifelse(as.integer(txp$how_many_steps_can_you_climb_before_you_get_short_of_breath) >= 15,
+                4,
+                ifelse(as.integer(txp$how_many_steps_can_you_climb_before_you_get_short_of_breath) >= 10,
+                  3,
+                  ifelse(as.integer(txp$how_many_steps_can_you_climb_before_you_get_short_of_breath) >= 5,
+                    2,
+                    ifelse(as.integer(txp$how_many_steps_can_you_climb_before_you_get_short_of_breath) <5 & as.integer(txp$how_many_steps_can_you_climb_before_you_get_short_of_breath) >= 0,
+                      1,
+                      -999
+                    )
+                  )
+                )
+              )
+            )
+          )
+        )
+      )
+    )
+  )
+)
+```
+
 * 1st CHECK if txp$do_you_get_short_of_breath == 1
 ** IF yes then
 
