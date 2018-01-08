@@ -163,4 +163,37 @@ for (varlist in loopOVER){
 
 ```
 
+# SPECIFIC QUESTIONS
+## Smoking 
+* tobacco_history1___0 (EVER SMOKED BOX Clinical Genetics)
+* tobacco_history1___1 (NEVER SMOKED BOX Clinical Genetics)
+
+```{r Converts Smoking Status from checkbox to multiple choice}
+txp$SmokingStatusOLD = ifelse(as.integer(txp$tobacco_history1___0) == 0 & as.integer(txp$tobacco_history1___1) == 0,
+                              NA,
+                              ifelse(as.integer(txp$tobacco_history1___0) == 1,
+                                     1,
+                                     0
+                              )
+)
+```
+### Recodes smokes status to "ever smoked" if affirmative on the following 
+* have_you_ever_smoked_cigarettes (Herlihy)
+* tobacco_history1___0 (EVER SMOKED BOX Clinical Genetics)
+* tobacco_history1___1 (NEVER SMOKED BOX Clinical Genetics)
+
+```{r Uses smoking info from either Herlihy and ClinGen Qs}
+txp$SmokingStatusNEW = ifelse(is.na(txp$SmokingStatusOLD) & txp$have_you_ever_smoked_cigarettes == "",
+                               NA,
+                               ifelse((is.na(txp$SmokingStatusOLD) & txp$have_you_ever_smoked_cigarettes == "1") | (txp$SmokingStatusOLD == 1) | txp$have_you_ever_smoked_cigarettes == "1",
+                                      1,
+                                      0
+                                      )
+)
+```
+
+```{r QC of Smoking status}
+print("Table of Smoking status in OLD REDCAP cohort")
+table(txp$SmokingStatusNEW,useNA = "always")
+```
 
