@@ -57,3 +57,41 @@ txp$sgrq_sob36 = txp$shortness_of_breath_41
 txp$affects_copd = txp$shortness_of_breath_44
 ```
 
+```{r Renames SGRQ_IPF variables}
+txp$sgrqi_symptoms1	= txp$cough_11
+txp$sgrqi_symptoms2	= txp$cough_12
+txp$sgrqi_symptoms3	= txp$cough_13
+txp$sgrqi_symptoms4	= txp$cough_14
+txp$sgrqi_symptoms5	= txp$cough_15	
+txp$sgrqi_symptoms6	= txp$cough_16	
+txp$sgrqi_activities1	= txp$shortness_of_breath_47
+txp$sgrqi_activities2	= txp$shortness_of_breath_48
+txp$sgrqi_activities3	= txp$shortness_of_breath_49
+txp$sgrqi_activities4	= txp$shortness_of_breath_50
+txp$sgrqi_activities5	= txp$shortness_of_breath_51
+txp$sgrqi_activities6	= txp$shortness_of_breath_52
+txp$sgrqi_activities7	= txp$shortness_of_breath_53
+txp$sgrqi_activities8	= txp$shortness_of_breath_54
+txp$sgrqi_activities9	= txp$shortness_of_breath_55
+txp$sgrqi_activities10	= txp$shortness_of_breath_56
+txp$sgrqi_activities11	= txp$shortness_of_breath_57
+txp$sgrqi_activities12	= txp$shortness_of_breath_58	
+txp$sgrqi_cough1	= txp$shortness_of_breath_59
+txp$sgrqi_cough2	= txp$shortness_of_breath_60
+txp$sgrqi_cough3	= txp$shortness_of_breath_61
+txp$sgrqi_cough4	= txp$shortness_of_breath_62
+txp$sgrqi_cough5	= txp$shortness_of_breath_63
+txp$sgrqi_cough6	= txp$shortness_of_breath_64
+txp$sgrqi_effects1	= txp$shortness_of_breath_65
+txp$sgrqi_effects2	= txp$shortness_of_breath_66
+txp$sgrqi_effects3	= txp$shortness_of_breath_67
+txp$sgrqi_effects4	= txp$shortness_of_breath_68
+txp$sgrqi_effects5	= txp$shortness_of_breath_69
+txp$sgrqi_effects6	= txp$shortness_of_breath_70
+txp$sgrqi_effects7	= txp$shortness_of_breath_71
+txp$sgrqi_effects8	= txp$shortness_of_breath_72
+txp$sgrqi_effects9	= txp$shortness_of_breath_73
+txp$sgrqi_effects10	= txp$shortness_of_breath_74
+txp$sgrqi_effects11	= txp$shortness_of_breath_75
+```
+

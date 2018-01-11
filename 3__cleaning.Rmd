@@ -163,6 +163,19 @@ for (varlist in loopOVER){
 
 ```
 
+```{r}
+loopOVER = c("sgrqi_symptoms1", "sgrqi_symptoms2", "sgrqi_symptoms3", "sgrqi_symptoms4", "sgrqi_activities1", "sgrqi_activities2", "sgrqi_activities3", 
+"sgrqi_activities4", "sgrqi_activities5", "sgrqi_activities6", "sgrqi_activities7", "sgrqi_activities8", "sgrqi_activities9", "sgrqi_activities10", "sgrqi_activities11",
+"sgrqi_cough1", "sgrqi_cough2", "sgrqi_cough3", "sgrqi_cough4", 
+"sgrqi_cough5", "sgrqi_cough6", "sgrqi_effects1", "sgrqi_effects2", "sgrqi_effects3", 
+"sgrqi_effects4", "sgrqi_effects5", "sgrqi_effects6", "sgrqi_effects7", "sgrqi_effects8", "sgrqi_effects9", "sgrqi_effects10")
+
+for (varlist in loopOVER){
+  txp[varlist] = as.factor(as.integer(txp[[varlist]]) +1)
+}
+```
+
+
 # SPECIFIC QUESTIONS
 ## Smoking 
 * tobacco_history1___0 (EVER SMOKED BOX Clinical Genetics)
