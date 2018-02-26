@@ -210,3 +210,15 @@ print("Table of Smoking status in OLD REDCAP cohort")
 table(txp$SmokingStatusNEW,useNA = "always")
 ```
 
+* NA appears to indicate "NEVER" smoked
+```{r Recodes blank smoking status to NEVERsmoker}
+txp$Smoking_NE = ifelse(is.na(txp$SmokingStatusNEW),
+                        0,
+                        ifelse(txp$SmokingStatusNEW == 1,
+                                1,
+                                0
+                               )
+                        )
+```
+
+
