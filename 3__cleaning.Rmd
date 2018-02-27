@@ -2,6 +2,11 @@
 title: "Cleaner Notebook"
 output: html_notebook
 ---
+```{r FUNCTIONS Definition}
+Remove.WhiteSpace <- function(x, dat) {
+  return( gsub("[[:space:]]", "", dat[(x)]) )
+}
+```
 
 
 ```{r adds TransplantID to old REDCap db}
@@ -211,7 +216,7 @@ table(txp$SmokingStatusNEW,useNA = "always")
 ```
 
 * NA appears to indicate "NEVER" smoked
-```{r Recodes blank smoking status to NEVERsmoker}
+```{r Recodes EVER_NEVER smoking status BLANK to NEVER smoker}
 txp$Smoking_NE = ifelse(is.na(txp$SmokingStatusNEW),
                         0,
                         ifelse(txp$SmokingStatusNEW == 1,
@@ -220,5 +225,28 @@ txp$Smoking_NE = ifelse(is.na(txp$SmokingStatusNEW),
                                )
                         )
 ```
+
+```{r Recodes CURRENT SMOKING STATUS blank to not currently smoking}
+txp$smoking_cigarettes_now = ifelse(is.na(txp$are_you_smoking_cigarettes_now) | txp$are_you_smoking_cigarettes_now == "" | txp$are_you_smoking_cigarettes_now == 0,
+                                    0,
+                                    1
+)
+```
+```{r Uses 2 variables to inform as to pack history}
+txp$on_average_how_many_packs_per_day_did_you_smoke[txp$on_average_how_many_packs_per_day_did_you_smoke %in% c("N/A","NA","")] = NA
+txp$tobacco_history3[txp$tobacco_history3 %in% c("N/A","NA","")] = NA
+txp$PackHx = ifelse(is.na(txp$on_average_how_many_packs_per_day_did_you_smoke),
+                    ifelse(is.na(txp$tobacco_history3),
+                           0,
+                           ifelse(txp$tobacco_history3 == "1", ##NEED To trim whitespace
+                                  1,
+                                  
+                    0,
+                    
+  (txp$on_average_how_many_packs_per_day_did_you_smoke == "" & txp$tobacco_history3 == "") | (),
+                    0,
+                    )
+```
+
 
 
