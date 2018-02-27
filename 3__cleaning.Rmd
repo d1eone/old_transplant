@@ -241,17 +241,27 @@ txp$AvgDailyCigSmoked = ifelse(is.na(txp$on_average_how_many_packs_per_day_did_y
                                   ifelse( gsub("[[:space:]]", "", txp$tobacco_history3) == "3packs/day", 
                                     60,
                                     as.numeric(gsub("\\D", "", txp$tobacco_history3))
-                                  ),
-                                 ifelse(gsub("[[:space:]]", "", txp$tobacco_history3) == "11/2" ,
-                                        30,
-                                        ifelse()) 
-                               ),
-                               
-                    0,
-                    
-  (txp$on_average_how_many_packs_per_day_did_you_smoke == "" & txp$tobacco_history3 == "") | (),
-                    0,
-                    )
+                                  )
+                                ),  
+                                ifelse(gsub("[[:space:]]", "", txp$tobacco_history3) %in% c("11/2","1to2","1.5"),
+                                         30,
+                                         ifelse(gsub("[[:space:]]", "", txp$tobacco_history3) %in% c("10cigarettesperday", "Half","0.5"),
+                                            10,
+                                            ifelse(gsub("[[:space:]]", "", txp$tobacco_history3) == ".25packsaday", 5,
+                                                ifelse(gsub("[[:space:]]", "", txp$tobacco_history3) == "2-2.5", 45,
+                                                    ifelse(gsub("[[:space:]]", "", txp$tobacco_history3) == "2-3", 50,
+                                                        ifelse(gsub("[[:space:]]", "", txp$tobacco_history3) == "lessthan1", 20,
+                                                            ifelse(as.numeric(gsub("\\D", "", txp$tobacco_history3)) >= 10, 
+                                                                as.numeric(gsub("\\D", "", txp$tobacco_history3)),
+                                                                as.numeric(gsub("\\D", "", txp$tobacco_history3)) * 20
+                                                            )
+                                                        )
+                                                      )
+                                                  )
+                                              )
+                                          )
+                                      )
+                                  )
 ```
 
 
