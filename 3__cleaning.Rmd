@@ -233,14 +233,20 @@ txp$smoking_cigarettes_now = ifelse(is.na(txp$are_you_smoking_cigarettes_now) | 
 )
 ```
 ```{r Uses 2 variables to inform as to pack history}
-txp$on_average_how_many_packs_per_day_did_you_smoke[txp$on_average_how_many_packs_per_day_did_you_smoke %in% c("N/A","NA","")] = NA
+txp$on_average_how_many_packs_per_day_did_you_smoke[txp$on_average_how_many_packs_per_day_did_you_smoke %in% c("N/A","NA","","a couple in my whole life")] = NA
 txp$tobacco_history3[txp$tobacco_history3 %in% c("N/A","NA","")] = NA
-txp$PackHx = ifelse(is.na(txp$on_average_how_many_packs_per_day_did_you_smoke),
-                    ifelse(is.na(txp$tobacco_history3),
-                           0,
-                           ifelse(txp$tobacco_history3 == "1", ##NEED To trim whitespace
-                                  1,
-                                  
+txp$AvgDailyCigSmoked = ifelse(is.na(txp$on_average_how_many_packs_per_day_did_you_smoke),
+                               ifelse(is.na(txp$tobacco_history3),
+                                  0,
+                                  ifelse( gsub("[[:space:]]", "", txp$tobacco_history3) == "3packs/day", 
+                                    60,
+                                    as.numeric(gsub("\\D", "", txp$tobacco_history3))
+                                  ),
+                                 ifelse(gsub("[[:space:]]", "", txp$tobacco_history3) == "11/2" ,
+                                        30,
+                                        ifelse()) 
+                               ),
+                               
                     0,
                     
   (txp$on_average_how_many_packs_per_day_did_you_smoke == "" & txp$tobacco_history3 == "") | (),
