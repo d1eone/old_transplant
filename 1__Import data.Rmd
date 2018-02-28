@@ -15,6 +15,7 @@ Goals:
 ```{r Loading Libraries, echo=FALSE}
 library(RCurl)
 library(jsonlite)
+library(dplyr)
 ```
 ```{r Constants and Definitions}
 api_url='https://redcap.partners.org/redcap/api/'
@@ -33,6 +34,7 @@ work.PPMR = postForm(
     type='flat',
     'fields[0]'='subject_id',
     'fields[1]'='log_transplant_id',
+    'fields[2]'='transp_cons_dat', 
     rawOrLabel='raw',
     rawOrLabelHeaders='raw',
     exportCheckboxLabel='false',
@@ -42,11 +44,8 @@ work.PPMR = postForm(
     filterLogic='[transplant_cons(1)] = 1'
 )
 PPMR = fromJSON(work.PPMR)
-PPMR$TransplantID = PPMR$log_transplant_id
-PPMR$PPMR_ID = PPMR$subject_id
-
-KEEP = c("PPMR_ID","TransplantID")
-PPMR = PPMR[KEEP]
+PPMR$TransplantID = rename(PPMR,c(TransplantID = log_transplant_id, PPMR_ID = subject_id, ConsentDATE = transp_cons_dat))  
+PPMR = select(PPMR, PPMR_ID,TransplantID, ConsentDATE)
 ```
 
 # Transplant Study Data from *OLD* REDCap DB
@@ -128,13 +127,7 @@ txp$SGRQ_Status = ifelse(is.na(txp$SGRQ_Status.x),
                                            txp$SGRQ_Status.y,txp$SGRQ_Status.x),
                                     txp$SGRQ_Status.x))
 
-
-KEEP = c("TransplantID","MRN","PGC_Status","Herlihy_Status","SGRQ_Status","PGCS_Status","TransplantStudy","emailAVAIL","email","elig_dx","Deceased")
-txp = txp[KEEP]
-
-# txp = merge(temp.txp, PPMR, by.x = "record_id", by.y = "PPMR_ID", all.y = TRUE)
-# KEEP = c("MRN","TransplantID","PGC_Status","Herlihy_Status","SGRQ_Status","TransplantStudy","emailAVAIL","email")
-# txp = txp[KEEP]
+txp = select(txp,c(TransplantID,MRN,PGC_Status,Herlihy_Status,SGRQ_Status,PGCS_Status,TransplantStudy,emailAVAIL,email,elig_dx,Deceased))
 ```
 
 # Clinical Genetics Study Data
