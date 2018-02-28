@@ -49,6 +49,7 @@ PPMR = rename(PPMR,TransplantID = log_transplant_id, PPMR_ID = subject_id, Conse
 <<<<<<< HEAD
 PPMR = select(PPMR, PPMR_ID,TransplantID, ConsentDATE, DOB)
 =======
+PPMR = select(PPMR, PPMR_ID,TransplantID, ConsentDATE)
 >>>>>>> f8e4c1e3d9da1fcc6837a21eb4bb8604430d10be
 ```
 
