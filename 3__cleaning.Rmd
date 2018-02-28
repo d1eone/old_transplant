@@ -265,4 +265,21 @@ txp$AvgDailyCigSmoked = ifelse(is.na(txp$on_average_how_many_packs_per_day_did_y
 ```
 
 
+##NEED to extract Age @SmokeInitiation
+* List unique values
+* Clean erroneous entries
+```{r List of Values for Age of Smoke Initiation}
+unique(txp$tobacco_history2)
+```
+
+```{r List of Values for Age of Smoke Cessation}
+unique(txp$tobacco_history4)
+```
+
+```{r}
+txp$tobacco_history4[txp$tobacco_history4 == "" | txp$tobacco_history4 == "N/A"| txp$tobacco_history4 == "NA"] = NA
+txp$SmokeAgeStop = ifelse(is.na(txp$tobacco_history4),
+                          NA,
+                          )
+```
 
