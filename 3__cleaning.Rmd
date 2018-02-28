@@ -2,6 +2,12 @@
 title: "Cleaner Notebook"
 output: html_notebook
 ---
+
+```{r}
+library(gsubfn)
+```
+
+
 ```{r FUNCTIONS Definition}
 Remove.WhiteSpace <- function(x, dat) {
   return( gsub("[[:space:]]", "", dat[(x)]) )
@@ -26,7 +32,7 @@ txp = merge(txp1, PPMR, by.x = "record_id", by.y= "PPMR_ID", all.x= TRUE)
 txp$what_are_the_main_concerns_that_prompted_your_visit_today[txp$what_are_the_main_concerns_that_prompted_your_visit_today == "N/A"] = NA
 txp$herli_cc = ifelse(txp$what_are_the_main_concerns_that_prompted_your_visit_today == "",NA,ifelse(grepl ("SOB",toupper(txp$what_are_the_main_concerns_that_prompted_your_visit_today)) | grepl ("SHORTNESS",toupper(txp$what_are_the_main_concerns_that_prompted_your_visit_today)) | grepl ("BREATH",toupper(txp$what_are_the_main_concerns_that_prompted_your_visit_today)), 1, ifelse (grepl ("COUGH", toupper(txp$what_are_the_main_concerns_that_prompted_your_visit_today)),2, ifelse(                     grepl("OXYGEN",toupper(txp$what_are_the_main_concerns_that_prompted_your_visit_today)),3,99))))
 
-txp$cc_spec = ifelse(REDCap$herli_cc == 99, txp$what_are_the_main_concerns_that_prompted_your_visit_today,NA)
+txp$cc_spec = ifelse(txp$herli_cc == 99, txp$what_are_the_main_concerns_that_prompted_your_visit_today,NA)
 ```
 
 * One disease that brought you to clinic?
@@ -39,7 +45,7 @@ txp$herli_cc_disease = ifelse(txp$what_are_the_main_concerns_that_prompted_your_
                       ifelse(grepl("FIBROSIS",toupper(txp$what_are_the_main_concerns_that_prompted_your_visit_today)) | grepl("IPF",toupper(txp$what_are_the_main_concerns_that_prompted_your_visit_today)),6,
                       ifelse(grepl("TRANSPLANT",toupper(txp$what_are_the_main_concerns_that_prompted_your_visit_today)) | grepl("PRE-TRANS",toupper(txp$what_are_the_main_concerns_that_prompted_your_visit_today)) ,5, 99))))))
 
-txp$cc_disease_spec = ifelse(REDCap$herli_cc_disease == 99, txp$what_are_the_main_concerns_that_prompted_your_visit_today,NA)
+txp$cc_disease_spec = ifelse(txp$herli_cc_disease == 99, txp$what_are_the_main_concerns_that_prompted_your_visit_today,NA)
 ```
 
 #### Do you usually have a cough? 
@@ -276,10 +282,35 @@ unique(txp$tobacco_history2)
 unique(txp$tobacco_history4)
 ```
 
+```{r Using QuitDate if tobacco_history4 is date}
+# txp$tobacco_history4[txp$tobacco_history4 == "" | txp$tobacco_history4 == "N/A"| txp$tobacco_history4 == "NA"] = NA
+# txp$SmokeAgeStop = ifelse(is.na(txp$tobacco_history4),
+#                           NA,
+#                           ifelse(grepl("/",toupper(txp$tobacco_history4)),
+#                                  as.Date(strapplyc(txp$tobacco_history4, "\\d+/\\d+/\\d+", simplify = TRUE), "%m/%d/%Y"),
+#                                  ifelse(grepl("June",toupper(txp$tobacco_history4)) | grepl("Aug",toupper(txp$tobacco_history4)),
+#                                         ))
+```
 ```{r}
 txp$tobacco_history4[txp$tobacco_history4 == "" | txp$tobacco_history4 == "N/A"| txp$tobacco_history4 == "NA"] = NA
-txp$SmokeAgeStop = ifelse(is.na(txp$tobacco_history4),
-                          NA,
-                          )
+txp$SmokeAgeStop = ifelse(txp$at_what_age_did_you_stop_smoking_cigarettes == "" | is.na(txp$at_what_age_did_you_stop_smoking_cigarettes),
+                         ifelse(is.na(txp$tobacco_history4),
+                                NA,
+                                ifelse(grepl("/",toupper(txp$tobacco_history4)),
+                                       as.integer( as.Date(txp$ConsentDATE) - (as.Date(strapplyc(txp$tobacco_history4, "\\d+/\\d+/\\d+", simplify = TRUE), "%m/%d/%Y")) )/365.25,
+                                       ifelse(grepl("AGO",toupper(txp$tobacco_history4)),
+                                              as.integer( as.Date(txp$ConsentDATE) - as.Date(txp$DOB) )/365.25 - as.integer(gsub("[[:space:]]", "", txp$tobacco_history4)),
+                                              as.integer(gsub("[[:space:]]", "", txp$tobacco_history4))
+                                       )
+                                  )
+                          ),
+                         ifelse(txp$at_what_age_did_you_stop_smoking_cigarettes == "7 years total",
+                                 as.integer( as.Date("1986-01-01") - as.Date(txp$DOB) )/365.25,
+                                 as.integer(txp$at_what_age_did_you_stop_smoking_cigarettes)
+                         )
+)
+```
+```{r}
+table(txp$tobacco_history4[txp$at_what_age_did_you_stop_smoking_cigarettes == "" | is.na(txp$at_what_age_did_you_stop_smoking_cigarettes)], useNA = "always")
 ```
 
