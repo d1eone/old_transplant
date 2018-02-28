@@ -46,11 +46,8 @@ work.PPMR = postForm(
 )
 PPMR = fromJSON(work.PPMR)
 PPMR = rename(PPMR,TransplantID = log_transplant_id, PPMR_ID = subject_id, ConsentDATE = transp_cons_dat, DOB = dob_log)  
-<<<<<<< HEAD
 PPMR = select(PPMR, PPMR_ID,TransplantID, ConsentDATE, DOB)
-=======
-PPMR = select(PPMR, PPMR_ID,TransplantID, ConsentDATE)
->>>>>>> f8e4c1e3d9da1fcc6837a21eb4bb8604430d10be
+PPMR = select(PPMR, PPMR_ID,TransplantID, ConsentDATE, DOB)
 ```
 
 # Transplant Study Data from *OLD* REDCap DB
