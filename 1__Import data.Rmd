@@ -44,7 +44,7 @@ work.PPMR = postForm(
     filterLogic='[transplant_cons(1)] = 1'
 )
 PPMR = fromJSON(work.PPMR)
-PPMR$TransplantID = rename(PPMR,c(TransplantID = log_transplant_id, PPMR_ID = subject_id, ConsentDATE = transp_cons_dat))  
+PPMR = rename(PPMR,TransplantID = log_transplant_id, PPMR_ID = subject_id, ConsentDATE = transp_cons_dat)  
 PPMR = select(PPMR, PPMR_ID,TransplantID, ConsentDATE)
 ```
 
@@ -127,7 +127,7 @@ txp$SGRQ_Status = ifelse(is.na(txp$SGRQ_Status.x),
                                            txp$SGRQ_Status.y,txp$SGRQ_Status.x),
                                     txp$SGRQ_Status.x))
 
-txp = select(txp,c(TransplantID,MRN,PGC_Status,Herlihy_Status,SGRQ_Status,PGCS_Status,TransplantStudy,emailAVAIL,email,elig_dx,Deceased))
+txp = select(txp,TransplantID,MRN,PGC_Status,Herlihy_Status,SGRQ_Status,PGCS_Status,TransplantStudy,emailAVAIL,email,elig_dx,Deceased)
 ```
 
 # Clinical Genetics Study Data
