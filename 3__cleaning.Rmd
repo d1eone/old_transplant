@@ -286,9 +286,9 @@ unique(txp$at_what_age_did_you_start_smoking_regularly)
 table(txp$at_what_age_did_you_start_smoking_regularly, txp$tobacco_history2, useNA = "always")
 ```
 ```{r Using Herlihy as basis for Smokarch}
-txp$at_what_age_did_you_start_smoking_regularly[txp$at_what_age_did_you_start_smoking_regularly == "" | txp$at_what_age_did_you_start_smoking_regularly == "N/A"] == NA #recodes missing
+txp$at_what_age_did_you_start_smoking_regularly[txp$at_what_age_did_you_start_smoking_regularly %in% c("","N/A")] = NA #recodes missing
 
-txp$tobacco_history2[txp$tobacco_history2 == "" | txp$tobacco_history2 == "N/A"] == NA #recodes missing
+txp$tobacco_history2[txp$tobacco_history2 == "" | txp$tobacco_history2 == "N/A"] = NA #recodes missing
 
 txp$SmokeAgeStart = ifelse(is.na(txp$at_what_age_did_you_start_smoking_regularly), 
                            ifelse(is.na(txp$tobacco_history2),
@@ -304,13 +304,18 @@ txp$SmokeAgeStart = ifelse(is.na(txp$at_what_age_did_you_start_smoking_regularly
 unique(txp$tobacco_history4)
 ```
 
+```{r testing strapplyc}
+txp$test = strapplyc(txp$tobacco_history4, "\\d+/\\d+/\\d+",simplify = TRUE)
+```
+
+
 ```{r Using Herlihy as basis for Age of Smoking Cessation}
 txp$tobacco_history4[txp$tobacco_history4 == "" | txp$tobacco_history4 == "N/A"| txp$tobacco_history4 == "NA"] = NA
 txp$SmokeAgeStop = ifelse(txp$at_what_age_did_you_stop_smoking_cigarettes == "" | is.na(txp$at_what_age_did_you_stop_smoking_cigarettes),
                          ifelse(is.na(txp$tobacco_history4),
                                 NA,
                                 ifelse(grepl("/",toupper(txp$tobacco_history4)),
-                                       as.integer( as.Date(txp$ConsentDATE) - (as.Date(strapplyc(txp$tobacco_history4, "\\d+/\\d+/\\d+", simplify = TRUE), "%m/%d/%Y")) )/365.25,
+                                       as.integer( as.Date(txp$ConsentDATE) - (as.Date(as.character(strapplyc(txp$tobacco_history4, "\\d+/\\d+/\\d+",simplify = TRUE)), "%m/%d/%Y")) )/365.25,
                                        ifelse(grepl("AGO",toupper(txp$tobacco_history4)),
                                               as.integer( as.Date(txp$ConsentDATE) - as.Date(txp$DOB) )/365.25 - as.integer(gsub("[[:space:]]", "", txp$tobacco_history4)),
                                               as.integer(gsub("[[:space:]]", "", txp$tobacco_history4))
