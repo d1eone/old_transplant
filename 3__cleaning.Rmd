@@ -341,5 +341,12 @@ txp$YEARS = ifelse(is.na(txp$SmokeAgeStop) | is.na(txp$SmokeAgeStart),
                )
 txp$PkHx = ( (txp$AvgDailyCigSmoked)/20 ) * txp$YEARS
 ```
+### WHO IS MISSING? CHECK CLINICAL GENETICS ###
+```{r}
+ILDco = subset(ILD, ILD$MRN %in% unique(PPMR$MRN))
+ILDco$YEARS = as.numeric(ILDco$age_stop_smoking) - as.numeric(ILDco$smoking_age_reg)
+temp = subset(txp, is.na(txp$YEARS) )
+ILDmiss = subset(ILDco, ILD$MRN %in% unique( temp$MRN))
+```
 
 
