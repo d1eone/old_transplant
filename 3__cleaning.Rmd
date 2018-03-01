@@ -5,6 +5,8 @@ output: html_notebook
 
 ```{r}
 library(gsubfn)
+library(tidyr)
+library(readr)
 ```
 
 
@@ -295,7 +297,7 @@ txp$SmokeAgeStart = ifelse(is.na(txp$at_what_age_did_you_start_smoking_regularly
                                         NA,
                                         as.integer(gsub("[[:space:]]", "", txp$tobacco_history2))
                                   ),
-                           as.integer(gsub("[[:space:]]", "", txp$at_what_age_did_you_start_smoking_regularly))
+                           as.numeric(gsub("([0-9]+).*$", "\\1", txp$at_what_age_did_you_start_smoking_regularly)) 
 )
 ```
 
@@ -317,14 +319,14 @@ txp$SmokeAgeStop = ifelse(txp$at_what_age_did_you_stop_smoking_cigarettes == "" 
                                 ifelse(grepl("/",toupper(txp$tobacco_history4)),
                                        as.integer( as.Date(txp$ConsentDATE) - (as.Date(as.character(strapplyc(txp$tobacco_history4, "\\d+/\\d+/\\d+",simplify = TRUE)), "%m/%d/%Y")) )/365.25,
                                        ifelse(grepl("AGO",toupper(txp$tobacco_history4)),
-                                              as.integer( as.Date(txp$ConsentDATE) - as.Date(txp$DOB) )/365.25 - as.integer(gsub("[[:space:]]", "", txp$tobacco_history4)),
-                                              as.integer(gsub("[[:space:]]", "", txp$tobacco_history4))
+                                              as.integer( as.Date(txp$ConsentDATE) - as.Date(txp$DOB) )/365.25 - as.numeric(gsub(".*?([0-9]+).*", "\\1", txp$tobacco_history4)),
+                                              as.numeric(gsub("([0-9]+).*$", "\\1", txp$tobacco_history4))
                                        )
                                   )
                           ),
                          ifelse(txp$at_what_age_did_you_stop_smoking_cigarettes == "7 years total",
                                  as.integer( as.Date("1986-01-01") - as.Date(txp$DOB) )/365.25,
-                                 as.integer(txp$at_what_age_did_you_stop_smoking_cigarettes)
+                                 as.numeric(gsub("([0-9]+).*$", "\\1", txp$at_what_age_did_you_stop_smoking_cigarettes))
                          )
 )
 ```
