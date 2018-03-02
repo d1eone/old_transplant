@@ -14,6 +14,13 @@ library(readr)
 Remove.WhiteSpace <- function(x, dat) {
   return( gsub("[[:space:]]", "", dat[(x)]) )
 }
+CountNumbers.Strings <- function(x){
+  length(unique(na.omit(as.numeric(unlist(strsplit(unlist(x), "[^0-9]+"))))))
+}
+
+Parse.Number.list <- function(x){
+  unique(na.omit(as.numeric(unlist(strsplit(unlist(x), "[^0-9]+")))))
+}
 ```
 
 
@@ -362,8 +369,17 @@ ILDco$smoked_cigarettes.ClinGen = ifelse(is.na(ILDco$smoked_cigarettes),
                                                 0
                                          )
 )
-
-                                                
+#### Recodes NA/missing current smoking status among ever-smokers to 0 ####
+ILDco$smoking_cigarettes_now[is.na(ILDco$smoking_cigarettes_now) & ILDco$smoked_cigarettes.ClinGen == 1] = 0 
+ILDco = rename(ILDco, AvgDailyCigSmoked = pack_day)
+ILDco$SmokeAgeStop.ClinGen = ifelse(is.na(ILDco$age_stop_smoking),
+                                    NA,
+                                    ifelse(CountNumbers.Strings(ILDco$age_stop_smoking) >1, #if there are more than 1 numbers use 2nd
+                                           Parse.Number.list(ILDco$age_stop_smoking)[2],
+                                           Parse.Number.list(ILDco$age_stop_smoking)[1]
+                                           )
+                                    )
+#ILDco$SmokeAgeStop.ClinGen[ILDco$MRN=="36141596"] = 
 ```
 
 
