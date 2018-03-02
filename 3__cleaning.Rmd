@@ -348,5 +348,22 @@ ILDco$YEARS = as.numeric(ILDco$age_stop_smoking) - as.numeric(ILDco$smoking_age_
 temp = subset(txp, is.na(txp$YEARS) )
 ILDmiss = subset(ILDco, ILD$MRN %in% unique( temp$MRN))
 ```
+```{r}
+ILDco$smoked_cigarettes.ClinGen = ifelse(is.na(ILDco$smoked_cigarettes),
+                                         ifelse(is.na(ILDco$smoking_history),
+                                                NA,
+                                                ifelse(ILDco$smoking_history == "0",
+                                                       0,
+                                                       1
+                                                )
+                                          ),
+                                         ifelse(ILDco$smoked_cigarettes == "1",
+                                                1,
+                                                0
+                                         )
+)
+
+                                                
+```
 
 
