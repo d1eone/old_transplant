@@ -374,9 +374,19 @@ ILDco$smoking_cigarettes_now[is.na(ILDco$smoking_cigarettes_now) & ILDco$smoked_
 ILDco = rename(ILDco, AvgDailyCigSmoked = pack_day)
 ILDco$SmokeAgeStop.ClinGen = ifelse(is.na(ILDco$age_stop_smoking),
                                     NA,
-                                    Parse.Number.list(ILDco$age_stop_smoking)
+                                    parse_integer(ILDco$age_stop_smoking)
                               )
-#ILDco$SmokeAgeStop.ClinGen[ILDco$MRN=="36141596"] = 
+ILDco$SmokeAgeStop.ClinGen[ILDco$MRN=="36141596"] = 71
+ILDco$SmokeAgeStop.ClinGen[ILDco$MRN=="30117733"] = 40
+ILDco$SmokeAgeStop.ClinGen[ILDco$MRN=="36561439"] = 55
+ILDco$SmokeAgeStop.ClinGen[ILDco$MRN=="35601350"] = 68
+ILDco$yearstop[ILDco$MRN=="29555794"] = 2013
+ILDco$SmokeAgeStop.ClinGen[ILDco$YEARS >100] = NA
+ILDco$SmokeAgeStart.ClinGen = parse_integer(ILDco$smoking_age_reg)
+ILDco$YEARS = ifelse(is.na(ILDco$SmokeAgeStop.ClinGen) | is.na(ILDco$SmokeAgeStart.ClinGen),
+                     as.numeric(ILDco$yearstop) - as.numeric(ILDco$yearstar),
+                     as.numeric(ILDco$SmokeAgeStop.ClinGen) - as.numeric(ILDco$SmokeAgeStart.ClinGen)
+                     ) 
 ```
 
 
