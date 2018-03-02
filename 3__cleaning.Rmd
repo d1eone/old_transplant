@@ -15,11 +15,11 @@ Remove.WhiteSpace <- function(x, dat) {
   return( gsub("[[:space:]]", "", dat[(x)]) )
 }
 CountNumbers.Strings <- function(x){
-  length(unique(na.omit(as.numeric(unlist(strsplit(unlist(x), "[^0-9]+"))))))
+  length(unique(as.numeric(unlist(strsplit(unlist(x), "[^0-9]+")))))
 }
 
 Parse.Number.list <- function(x){
-  unique(na.omit(as.numeric(unlist(strsplit(unlist(x), "[^0-9]+")))))
+  unique(as.numeric(unlist(strsplit(unlist(x), "[^0-9]+"))))
 }
 ```
 
@@ -374,11 +374,8 @@ ILDco$smoking_cigarettes_now[is.na(ILDco$smoking_cigarettes_now) & ILDco$smoked_
 ILDco = rename(ILDco, AvgDailyCigSmoked = pack_day)
 ILDco$SmokeAgeStop.ClinGen = ifelse(is.na(ILDco$age_stop_smoking),
                                     NA,
-                                    ifelse(CountNumbers.Strings(ILDco$age_stop_smoking) >1, #if there are more than 1 numbers use 2nd
-                                           Parse.Number.list(ILDco$age_stop_smoking)[2],
-                                           Parse.Number.list(ILDco$age_stop_smoking)[1]
-                                           )
-                                    )
+                                    Parse.Number.list(ILDco$age_stop_smoking)
+                              )
 #ILDco$SmokeAgeStop.ClinGen[ILDco$MRN=="36141596"] = 
 ```
 
