@@ -382,11 +382,15 @@ ILDco$SmokeAgeStop.ClinGen[ILDco$MRN=="36561439"] = 55
 ILDco$SmokeAgeStop.ClinGen[ILDco$MRN=="35601350"] = 68
 ILDco$yearstop[ILDco$MRN=="29555794"] = 2013
 ILDco$SmokeAgeStop.ClinGen[ILDco$YEARS >100] = NA
+ILDco$SmokeAgeStart.ClinGen[ILDco$MRN=="30664304"] = 18
 ILDco$SmokeAgeStart.ClinGen = parse_integer(ILDco$smoking_age_reg)
 ILDco$YEARS = ifelse(is.na(ILDco$SmokeAgeStop.ClinGen) | is.na(ILDco$SmokeAgeStart.ClinGen),
                      as.numeric(ILDco$yearstop) - as.numeric(ILDco$yearstar),
                      as.numeric(ILDco$SmokeAgeStop.ClinGen) - as.numeric(ILDco$SmokeAgeStart.ClinGen)
-                     ) 
+                     )
+ILDco$Yr.Smoke.Start_ClinGen = parse_integer(ILDco$yearstar)
+ILDco$Yr.Smoke.Stop_ClinGen = parse_integer(ILDco$yearstop)
+ILDco$SmokeAgeStop.ClinGen[ILDco$YEARS >100] = NA #Study age cannot be >100 these are errors
 ```
 
 
