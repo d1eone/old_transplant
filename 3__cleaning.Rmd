@@ -393,6 +393,25 @@ ILDco$Yr.Smoke.Start_ClinGen = parse_integer(ILDco$yearstar)
 ILDco$Yr.Smoke.Stop_ClinGen = parse_integer(ILDco$yearstop)
 ILDco$SmokeAgeStop.ClinGen[ILDco$YEARS >100] = NA #Study age cannot be >100 these are errors
 ILDupdate = select(ILDco, MRN, smoked_cigarettes.ClinGen, SmokeAgeStart.ClinGen, SmokeAgeStop.ClinGen, Yr.Smoke.Start_ClinGen, Yr.Smoke.Stop_ClinGen, YEARS, AvgDailyCigSmoked.ClinGen)
+## Recodes from Never smoker to Ever-smoker if ANY REPORTED INFO on smoking (age/year of start/stop)
+ILDupdate$smoked_cigarettes.ClinGen[ILDupdate$smoked_cigarettes.ClinGen == 0 & ( !is.na(ILDupdate$SmokeAgeStart.ClinGen) !is.na(ILDupdate$SmokeAgeStop.ClinGen) | !is.na(ILDupdate$Yr.Smoke.Start_ClinGen) | !is.na(ILDupdate$Yr.Smoke.Stop_ClinGen) )]
 ```
 
+```{r Creates smoke history data frames}
+txp.SmHx = select(txp, TransplantID, MRN, DOB, ConsentDATE, SmokingStatusNEW, YEARS, AvgDailyCigSmoked, SmokeAgeStart, SmokeAgeStop)
+SmHx = merge(txp.SmHx, ILDco, by= "MRN", all.x= TRUE)
+#### Extracts calculated-year of SMOKARCHE in Transplant Data #### 
+SmHx$Yr.Smoke.Start_Txp = as.integer(suppressWarnings(format(( SmHx$DOB + SmHx$SmokeAgeStart*365.25 ), "%Y")))
+SmHx$Yr.Smoke.Stop_Txp = as.integer(suppressWarnings(format(( SmHx$DOB + SmHx$SmokeAgeStop*365.25 ), "%Y")))
+
+#### RECTIFY ACROSS shared variables ####
+SmHx$Years = ifelse( is.na(SmHx$YEARS.x), #puts YEARS backtogether
+                     ifelse(is.na(SmHx$YEARS.y),
+                            NA,
+                            SmHx$YEARS.y
+                            ),
+                     SmHx$YEARS.x
+                     )
+SmHx$EverSmoked = ifelse(is.na())
+```
 
