@@ -349,13 +349,13 @@ txp$YEARS = ifelse(is.na(txp$SmokeAgeStop) | is.na(txp$SmokeAgeStart),
 txp$PkHx = ( (txp$AvgDailyCigSmoked)/20 ) * txp$YEARS
 ```
 ### WHO IS MISSING? CHECK CLINICAL GENETICS ###
-```{r}
+```{r Creates Subset of ILD data __Uses MRN of subjects missing Smoking exposure data in Transplant REDcap__}
 ILDco = subset(ILD, ILD$MRN %in% unique(PPMR$MRN))
 ILDco$YEARS = as.numeric(ILDco$age_stop_smoking) - as.numeric(ILDco$smoking_age_reg)
 temp = subset(txp, is.na(txp$YEARS) )
 ILDmiss = subset(ILDco, ILD$MRN %in% unique( temp$MRN))
 ```
-```{r}
+```{r Creates ClinGen Smoking variables for LATER Merge with Transplant}
 ILDco$smoked_cigarettes.ClinGen = ifelse(is.na(ILDco$smoked_cigarettes),
                                          ifelse(is.na(ILDco$smoking_history),
                                                 NA,
@@ -371,7 +371,8 @@ ILDco$smoked_cigarettes.ClinGen = ifelse(is.na(ILDco$smoked_cigarettes),
 )
 #### Recodes NA/missing current smoking status among ever-smokers to 0 ####
 ILDco$smoking_cigarettes_now[is.na(ILDco$smoking_cigarettes_now) & ILDco$smoked_cigarettes.ClinGen == 1] = 0 
-ILDco = rename(ILDco, AvgDailyCigSmoked = pack_day)
+# ILDco = rename(ILDco, AvgDailyCigSmoked = pack_day) need to convert from packs/day to cigs/day
+ILDco$AvgDailyCigSmoked.ClinGen = as.numeric(ILDco$pack_day) * 20
 ILDco$SmokeAgeStop.ClinGen = ifelse(is.na(ILDco$age_stop_smoking),
                                     NA,
                                     parse_integer(ILDco$age_stop_smoking)
@@ -391,6 +392,7 @@ ILDco$YEARS = ifelse(is.na(ILDco$SmokeAgeStop.ClinGen) | is.na(ILDco$SmokeAgeSta
 ILDco$Yr.Smoke.Start_ClinGen = parse_integer(ILDco$yearstar)
 ILDco$Yr.Smoke.Stop_ClinGen = parse_integer(ILDco$yearstop)
 ILDco$SmokeAgeStop.ClinGen[ILDco$YEARS >100] = NA #Study age cannot be >100 these are errors
+ILDupdate = select(ILDco, MRN, smoked_cigarettes.ClinGen, SmokeAgeStart.ClinGen, SmokeAgeStop.ClinGen, Yr.Smoke.Start_ClinGen, Yr.Smoke.Stop_ClinGen, YEARS, AvgDailyCigSmoked.ClinGen)
 ```
 
 
