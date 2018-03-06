@@ -9,7 +9,8 @@ output: html_notebook
 ## Import JSON data from REDCap using API access
 
 
-``` {R Loads constants}
+
+```{r Loads constants}
 lib.list = c("RCurl","jsonlite","dplyr")
 api_url = "https://redcap.partners.org/redcap/api/"
 txp_token= 'F693D1C3E97B6F591F9A3CF50B40B1F2'
@@ -47,7 +48,9 @@ work.txp3= fromJSON(work.txp_temp3)
 work.txp3 = rename(work.txp3, DxGROUP = elig_dx, TransplantID = transplant_id, Referred = elig_considered, O2= qs_oxygen, EverSmoked.NewTXP = smoked_cigarettes, AvgDailyCigs.NewTXP = cigarettes_per_day, AgeStartSmoking.NewTXP = smoking_age_reg, AgeStopSmoking.NewTXP = age_stop_smoking)
 work.txp3$elig_considered = ifelse(work.txp3$Referred == 1,TRUE,
                            ifelse(work.txp3$Referred == 0,FALSE,NA))
-NewTXP = select(work.txp3, TransplantID, Referred,DxGROUP, O2, EverSmoked.NewTXP, AvgDailyCigs.NewTXP, AgeStartSmoking.NewTXP, AgeStopSmoking.NewTXP, Yr.Smoke.Start_NewTXP, Yr.Smoke.Stop_NewTXP)
+NewTXP = select(work.txp3, TransplantID, Referred,DxGROUP, O2, EverSmoked.NewTXP, AvgDailyCigs.NewTXP, AgeStartSmoking.NewTXP, AgeStopSmoking.NewTXP)
+
+NewTXP$YEARS = as.numeric(NewTXP$AgeStopSmoking.NewTXP) - as.numeric(NewTXP$AgeStartSmoking.NewTXP)
 ```
 
 
