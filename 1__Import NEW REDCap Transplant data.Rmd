@@ -1,0 +1,55 @@
+---
+title: "Import Current REDCap Database"
+output: html_notebook
+---
+
+## Imports REDCap data from new version of REDCap with survey data that was more recently captured using emailed links and phone calls.
+
+# PPMR Data from REDCap
+## Import JSON data from REDCap using API access
+
+
+``` {R Loads constants}
+lib.list = c("RCurl","jsonlite","dplyr")
+api_url = "https://redcap.partners.org/redcap/api/"
+txp_token= 'F693D1C3E97B6F591F9A3CF50B40B1F2'
+```
+
+
+```{R Library LOADING MODULE}
+lapply(lib.list, library, character.only = TRUE)
+```
+
+```{R Data Import module - TRANSPLANT GROUP}
+work.txp_temp3 <- postForm(
+  uri= api_url,
+  token= txp_token,
+  content='record',
+  format='json',
+  type='flat',
+  'fields[0]'='transplant_id',
+  'fields[1]'='elig_dx',
+  'fields[2]'='elig_considered',
+  'fields[3]'='qs_oxygen',
+  'fields[4]'='smoked_cigarettes',
+  'fields[5]'='smoking_age_reg',
+  'fields[6]'='cigarettes_per_day',
+  'fields[7]'='age_stop_smoking',
+  'events[0]'='baseline_arm_1',
+  rawOrLabel='raw',
+  rawOrLabelHeaders='raw',
+  exportCheckboxLabel='false',
+  exportSurveyFields='false',
+  exportDataAccessGroups='false',
+  returnFormat='json'
+)
+work.txp3= fromJSON(work.txp_temp3)
+work.txp3 = rename(work.txp3, DxGROUP = elig_dx, TransplantID = transplant_id, Referred = elig_considered, O2= qs_oxygen, EverSmoked.NewTXP = smoked_cigarettes, AvgDailyCigs.NewTXP = cigarettes_per_day, AgeStartSmoking.NewTXP = smoking_age_reg, AgeStopSmoking.NewTXP = age_stop_smoking)
+work.txp3$elig_considered = ifelse(work.txp3$Referred == 1,TRUE,
+                           ifelse(work.txp3$Referred == 0,FALSE,NA))
+NewTXP = select(work.txp3, TransplantID, Referred,DxGROUP, O2, EverSmoked.NewTXP, AvgDailyCigs.NewTXP, AgeStartSmoking.NewTXP, AgeStopSmoking.NewTXP, Yr.Smoke.Start_NewTXP, Yr.Smoke.Stop_NewTXP)
+```
+
+
+
+
