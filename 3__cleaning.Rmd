@@ -412,6 +412,48 @@ SmHx$Years = ifelse( is.na(SmHx$YEARS.x), #puts YEARS backtogether
                             ),
                      SmHx$YEARS.x
                      )
-SmHx$EverSmoked = ifelse(is.na())
+SmHx$EverSmoked = ifelse(is.na(SmHx$SmokingStatusNEW),
+                         ifelse(is.na(SmHx$smoked_cigarettes.ClinGen),
+                                NA,
+                                SmHx$smoked_cigarettes.ClinGen
+                                ),
+                         SmHx$SmokingStatusNEW
+)
+SmHx$AvgDailyCigs = ifelse(is.na(SmHx$AvgDailyCigSmoked),
+                           ifelse(is.na(SmHx$AvgDailyCigSmoked.ClinGen),
+                                  NA,
+                                  SmHx$AvgDailyCigSmoked.ClinGen
+                                  ),
+                           SmHx$AvgDailyCigSmoked
+)
+SmHx$Yr.Smoke.Start = ifelse(is.na(SmHx$Yr.Smoke.Start_Txp),
+                           ifelse(is.na(SmHx$Yr.Smoke.Start_ClinGen),
+                                  NA,
+                                  SmHx$Yr.Smoke.Start_ClinGen
+                                  ),
+                           SmHx$Yr.Smoke.Start_Txp
+)
+SmHx$Yr.Smoke.Stop = ifelse(is.na(SmHx$Yr.Smoke.Stop_Txp),
+                           ifelse(is.na(SmHx$Yr.Smoke.Stop_ClinGen),
+                                  NA,
+                                  SmHx$Yr.Smoke.Stop_ClinGen
+                                  ),
+                           SmHx$Yr.Smoke.Stop_Txp
+)
+SmHx$AgeStartSmoking = ifelse(is.na(SmHx$SmokeAgeStart),
+                           ifelse(is.na(SmHx$SmokeAgeStart.ClinGen),
+                                  NA,
+                                  SmHx$SmokeAgeStart.ClinGen
+                                  ),
+                           SmHx$SmokeAgeStart
+)
+SmHx$AgeStopSmoking = ifelse(is.na(SmHx$SmokeAgeStop),
+                           ifelse(is.na(SmHx$SmokeAgeStop.ClinGen),
+                                  NA,
+                                  SmHx$SmokeAgeStop.ClinGen
+                                  ),
+                           SmHx$SmokeAgeStop
+)
+SmokingDF = select(SmHx,TransplantID, MRN, DOB, ConsentDATE, EverSmoked, AvgDailyCigs, AgeStartSmoking,AgeStopSmoking,Yr.Smoke.Start, Yr.Smoke.Stop)
 ```
 
