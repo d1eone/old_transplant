@@ -73,65 +73,6 @@ txp1= fromJSON(work.txp1)
 
 ```
 
-```{r PPMI Transplant Study REDCap}
-work.txp_temp3 <- postForm(
-    uri='https://redcap.partners.org/redcap/api/',
-    token='F693D1C3E97B6F591F9A3CF50B40B1F2',
-    content='record',
-    format='json',
-    type='flat',
-    'fields[0]'='transplant_id',
-    'fields[1]'='elig_dx',
-    'fields[2]'='herlihy_questionnaire_complete',
-    'fields[3]'='pgc_supplemental_questionnaire_pgcqs_complete',
-    'fields[4]'='pulmonary_genetics_center_questionnaire_pgcq_complete',
-    'fields[5]'='st_georges_questionnaire_sgrq_copd_complete',
-    'fields[6]'='st_georges_questionnaire_sgrqiipf_complete',
-    'events[0]'='baseline_arm_1',
-    rawOrLabel='raw',
-    rawOrLabelHeaders='raw',
-    exportCheckboxLabel='false',
-    exportSurveyFields='false',
-    exportDataAccessGroups='false',
-    returnFormat='json'
-)
-work.txp3= fromJSON(work.txp_temp3)
-work.txp3$PGCS_Status = work.txp3$pgc_supplemental_questionnaire_pgcqs_complete
-work.txp3$PGC_Status = work.txp3$pulmonary_genetics_center_questionnaire_pgcq_complete
-work.txp3$Herlihy_Status = work.txp3$herlihy_questionnaire_complete
-work.txp3$SGRQ_Status = ifelse(work.txp3$st_georges_questionnaire_sgrqiipf_complete== 2 | work.txp3$st_georges_questionnaire_sgrq_copd_complete== 2, 2,0)
-work.txp3$TransplantID = work.txp3$transplant_id
-```
-```{r Creates PPMI transplant DB}
-txp_A = merge(temp.txp, PPMR, by.x = "record_id", by.y = "PPMR_ID", all.y = TRUE)
-txp = merge(txp_A, work.txp3, by ="TransplantID", all.x = TRUE)
-
-txp$PGC_Status = ifelse(is.na(txp$PGC_Status.x),
-                             ifelse(is.na(txp$PGC_Status.y),0,
-                                    txp$PGC_Status.y),
-                             ifelse(txp$PGC_Status.x == 0,
-                                    ifelse(!is.na(txp$PGC_Status.y),
-                                           txp$PGC_Status.y,txp$PGC_Status.x),
-                                    txp$PGC_Status.x))
-
-txp$Herlihy_Status = ifelse(is.na(txp$Herlihy_Status.x),
-                             ifelse(is.na(txp$Herlihy_Status.y),0,
-                                    txp$Herlihy_Status.y),
-                             ifelse(txp$Herlihy_Status.x == 0,
-                                    ifelse(!is.na(txp$Herlihy_Status.y),
-                                           txp$Herlihy_Status.y,txp$Herlihy_Status.x),
-                                    txp$Herlihy_Status.x))
-
-txp$SGRQ_Status = ifelse(is.na(txp$SGRQ_Status.x),
-                             ifelse(is.na(txp$SGRQ_Status.y),0,
-                                    txp$SGRQ_Status.y),
-                             ifelse(txp$SGRQ_Status.x == 0,
-                                    ifelse(!is.na(txp$SGRQ_Status.y),
-                                           txp$SGRQ_Status.y,txp$SGRQ_Status.x),
-                                    txp$SGRQ_Status.x))
-
-txp = select(txp,TransplantID,MRN,PGC_Status,Herlihy_Status,SGRQ_Status,PGCS_Status,TransplantStudy,emailAVAIL,email,elig_dx,Deceased)
-```
 
 # Clinical Genetics Study Data
 ## Imports JSON data using API
