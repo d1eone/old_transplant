@@ -458,36 +458,36 @@ SmHx$AgeStopSmoking = ifelse(is.na(SmHx$SmokeAgeStop),
                            SmHx$SmokeAgeStop
 )
 SmokingDF = select(SmHx,TransplantID, MRN, DOB, ConsentDATE, EverSmoked, AvgDailyCigs, Years, AgeStartSmoking,AgeStopSmoking,Yr.Smoke.Start, Yr.Smoke.Stop)
-Final_SmokingDF = merge(SmokingDF, NewTXP, by= "TransplantID", all.x = TRUE)
-Final_SmokingDF$SmokeDuration = ifelse(is.na(Final_SmokingDF$Years),
-                                             ifelse(is.na(Final_SmokingDF$YEARS),
+Survey_SmokingDF = merge(SmokingDF, NewTXP, by= "TransplantID", all.x = TRUE)
+Survey_SmokingDF$SmokeDuration = ifelse(is.na(Survey_SmokingDF$Years),
+                                             ifelse(is.na(Survey_SmokingDF$YEARS),
                                                     0,
-                                                    Final_SmokingDF$YEARS
+                                                    Survey_SmokingDF$YEARS
                                                     ),
-                                              Final_SmokingDF$Years
+                                              Survey_SmokingDF$Years
                                        )
 #### Calculates Average Number of Packs Per Day ####
-Final_SmokingDF$AvgPPD = ifelse(is.na(Final_SmokingDF$AvgDailyCigs),
-                                ifelse(is.na(Final_SmokingDF$AvgDailyCigs.NewTXP) | Final_SmokingDF$AvgDailyCigs.NewTXP == "",
+Survey_SmokingDF$AvgPPD = ifelse(is.na(Survey_SmokingDF$AvgDailyCigs),
+                                ifelse(is.na(Survey_SmokingDF$AvgDailyCigs.NewTXP) | Survey_SmokingDF$AvgDailyCigs.NewTXP == "",
                                        0,
-                                       as.integer(Final_SmokingDF$AvgDailyCigs.NewTXP)
+                                       as.integer(Survey_SmokingDF$AvgDailyCigs.NewTXP)
                                 ),
-                                ifelse(Final_SmokingDF$AvgDailyCigs == 0,
-                                    ifelse(as.integer(Final_SmokingDF$AvgDailyCigs.NewTXP) == 0,
+                                ifelse(Survey_SmokingDF$AvgDailyCigs == 0,
+                                    ifelse(as.integer(Survey_SmokingDF$AvgDailyCigs.NewTXP) == 0,
                                         0,
-                                        as.integer(Final_SmokingDF$AvgDailyCigs.NewTXP)/20
+                                        as.integer(Survey_SmokingDF$AvgDailyCigs.NewTXP)/20
                                     ),
-                                    as.integer(Final_SmokingDF$AvgDailyCigs)/20
+                                    as.integer(Survey_SmokingDF$AvgDailyCigs)/20
                                 )
 )
 # Final_SmokingDF$AvgDailyCigs[Final_SmokingDF$AvgDailyCigs == ""] = Final_SmokingDF$AvgDailyCigs.NewTXP
-Final_SmokingDF$SmokEXP = ifelse(is.na(Final_SmokingDF$EverSmoked),
-                                 ifelse(is.na(Final_SmokingDF$EverSmoked.NewTXP),
+Survey_SmokingDF$SmokEXP = ifelse(is.na(Survey_SmokingDF$EverSmoked),
+                                 ifelse(is.na(Survey_SmokingDF$EverSmoked.NewTXP),
                                         NA,
-                                        as.integer(Final_SmokingDF$EverSmoked.NewTXP)
+                                        as.integer(Survey_SmokingDF$EverSmoked.NewTXP)
                                  ),
-                                 as.integer(Final_SmokingDF$EverSmoked)
+                                 as.integer(Survey_SmokingDF$EverSmoked)
 )
-Final_SmokingDF$PackYears = Final_SmokingDF$AvgPPD * Final_SmokingDF$SmokeDuration
+Survey_SmokingDF$PackYears = Survey_SmokingDF$AvgPPD * Survey_SmokingDF$SmokeDuration
 ```
 
