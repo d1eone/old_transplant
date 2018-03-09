@@ -136,7 +136,7 @@ txp = select(txp,TransplantID,MRN,PGC_Status,Herlihy_Status,SGRQ_Status,PGCS_Sta
 # Clinical Genetics Study Data
 ## Imports JSON data using API
 
-```{r COPIED ILD API pull}
+```{r Data Import module - Clinical Genetics}
 ### ClinGen API pull of Probands ####
 work1.ILD = postForm(
   uri=api_url,
@@ -238,70 +238,6 @@ ILD = select(ILD, MRN, id, smoked_cigarettes, smoking_history, smoking_cigarette
 ```
 
 
-
-
-```{r Data Import module - Clinical Genetics}
-# work1.ILD = postForm(
-#     uri=api_url,
-#     token=ClinGen_token,
-#     content='record',
-#     format='json',
-#     type='flat',
-#     'fields[0]'='bwhild_id',
-#     'fields[1]'='id',
-#     'fields[2]'='mrn',
-#     'fields[3]'='familyid',
-#     'fields[4]'='familyname',
-#     'fields[5]'='smoking_age_reg',
-#     'fields[6]'='smoked_cigarettes',
-#     'fields[7]'='packs_per_day',
-#     'fields[8]'='smoking_cigarettes_now',
-#     'fields[9]'='age_stop_smoking',
-#     'fields[10]'='smoking_history',
-#     'fields[11]'='pack_day',
-#     'fields[12]'='yearstar',
-#     'fields[13]'='yearstop',
-#     'fields[14]'='demo_last',
-#     rawOrLabel='raw',
-#     rawOrLabelHeaders='raw',
-#     exportCheckboxLabel='false',
-#     exportSurveyFields='false',
-#     exportDataAccessGroups='false',
-#     returnFormat='json',
-#     filterLogic='[icf_signature(4)] = 1'
-# )
-# 
-# work2.ILD = fromJSON(work1.ILD)
-# work2.ILD$arm = ifelse(work2.ILD$redcap_event_name == "screening_arm_1","proband",
-#                  ifelse(work2.ILD$redcap_event_name == "screening_arm_2","relatives","ERROR"))
-# work2.ILD$ClinicalGeneticsStudy = TRUE
-# work2.ILD$LastName = toupper(work2.ILD$demo_last)
-# work2.ILD$FamilyNAME = toupper(work2.ILD$familyname)
-# work2.ILD$MRN = work2.ILD$mrn
-# work2.ILD$FamilyID = work2.ILD$familyid
-# work2.ILD$id[work2.ILD$id == ""] = work2.ILD$bwhild_id[work2.ILD$id == ""] #replaces missing values of "id" using values from "bwhwork2.ILD_id"
-# work2.ILD = work2.ILD[,!(names(work2.ILD) %in% c("mrn","familyid","familyname","demo_last"))] #drops original variables not capitalized
-# #work2.ILD$ProbandID[,work2.ILD$arm == "relatives"] = work2.ILD$id[,work2.ILD$arm == "proband" & work2.ILD$]
-# 
-# ILD_relatives = subset(work2.ILD, work2.ILD$arm == "relatives")
-# DF_FamilyIDs = unique(ILD_relatives[c("FamilyNAME","FamilyID")])
-# ILD_probands = subset(work2.ILD,work2.ILD$arm == "proband")
-# ILD_probands = ILD_probands[,!(names(ILD_probands) %in% c("FamilyID"))] #drops unused variable FamilyILD
-# ILD_probands$probandID = ILD_probands$id
-# ILD_pro2 = ILD_probands[c("probandID","LastName")]
-# ILD_pro2$LastName[ILD_pro2$LastName == "BURHAM"] = "BURNHAM" #corrects mispelling of name
-# ILD_pro3 = merge(ILD_probands, DF_FamilyIDs, by.x = "LastName", by.y = "FamilyNAME",all = TRUE)
-# ILD_rel2 = merge(ILD_relatives, ILD_pro2, by.x= "FamilyNAME", by.y=
-#               "LastName", all.x= TRUE)
-# ILD_pro3$probandID = NA #resets before merge because we dont need this for probands
-# ILD_all = rbind(ILD_rel2,ILD_pro3)
-# ILD = subset(ILD_all, ILD_all$arm == "proband")
-# #ILD$ClinGen = 1
-# ILD$PGC_Status = ILD$pulmonary_genetics_questionnaire_complete
-# ILD$Herlihy_Status = ILD$herlihy_questionnaire_complete
-# ILD$SGRQ_Status = ILD$st_georges_respiratory_questionnaire_sgrq_complete
-# ILD = select(ILD, MRN, id, smoked_cigarettes, smoking_history, smoking_cigarettes_now, pack_day, yearstar, smoking_age_reg, yearstop, age_stop_smoking)
-```
 
 
 # Create lists of variables per domain and instrument
