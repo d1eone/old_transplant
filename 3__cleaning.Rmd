@@ -491,3 +491,73 @@ Survey_SmokingDF$SmokEXP = ifelse(is.na(Survey_SmokingDF$EverSmoked),
 Survey_SmokingDF$PackYears = Survey_SmokingDF$AvgPPD * Survey_SmokingDF$SmokeDuration
 ```
 
+```{r Integrates Chart Review with Survey data -- Smoking Status}
+SmokingStatus_temp = merge(Survey_SmokingDF, work4.SmokingCR, by = "TransplantID", all.x = TRUE)
+```
+
+### How many subjects have discordant self-reported smoking status from medical chart review? ###
+```{r Cross-Tabulation of Self vs Medical Chart Review of SMOKING STATUS}
+with(SmokingStatus_temp,table(SmokEXP,cr_smokingstatus, useNA = "always"))
+```
+#### No one self-reported NEVER SMOKER where chart review indicated EVER SMOKER ####
+* 1 subject erroneously indicated some smoke history on survey but Chart Review of provider and social worker states no smoking history - will be coded as "previous smoker" -- Subject = PTM081
+* 3 subjects missing survey data had evidence of "never smoker" in medical chart
+* 25 subjects missing data had evidence of previous smoking histry in med chart
+* 1 subject missing survey data was currently smoking at enrollment according to med chart
+
+```{r Creating Final Variables}
+SmokingStatus_temp$Smoking = with(SmokingStatus_temp, 
+                                 ifelse(is.na(SmokEXP),
+                                         as.integer(cr_smokingstatus),
+                                         as.integer(SmokEXP)
+                                 )
+)
+#### FIXES one exception - PTM081 after medical record abstraction, subject is definitely NEVER SMOKER and survey mark was erroneous
+SmokingStatus_temp$Smoking[SmokingStatus_temp$TransplantID =="PTM081"] = 0
+
+#### Scans Medical Record Abstraction Chart Review and Survey data for smokers (Smoking <> 0) and uses greater value 
+SmokingStatus_temp$Yrs.Smoked = with(SmokingStatus_temp, ifelse(Smoking == 0,
+                                        0,
+                                        with(SmokingStatus_temp, ifelse(is.na(cr_duration_smoking),
+                                                    SmokeDuration,
+                                                    with(SmokingStatus_temp, ifelse(as.numeric(cr_duration_smoking) > SmokeDuration,
+                                                         as.numeric(cr_duration_smoking),
+                                                         SmokeDuration
+                                                         ))
+                                        ))
+))
+SmokingStatus_temp$Avg.PPD = with(SmokingStatus_temp, ifelse(Smoking == 0,
+                                        0,
+                                        with(SmokingStatus_temp, ifelse(is.na(cr_avg_num_daily_cigs),
+                                                    AvgPPD,
+                                                    with(SmokingStatus_temp, ifelse(is.na(AvgPPD),
+                                                        (as.numeric(cr_avg_num_daily_cigs))/20,
+                                                        with(SmokingStatus_temp, ifelse((as.numeric(cr_avg_num_daily_cigs)/20) > AvgPPD,
+                                                          (as.numeric(cr_avg_num_daily_cigs)/20),
+                                                          AvgPPD
+                                                         ))
+                                                    ))
+                                        ))
+))
+SmokingStatus_temp$Pack.Years = SmokingStatus_temp$Avg.PPD * SmokingStatus_temp$Yrs.Smoked #calculates new Pack Year exposure variable
+
+# SmokingStatus_temp$Age.Smokarch = with(SmokingStatus_temp, ifelse(Smoking == 0,
+#                                         NA,
+#                                         with(SmokingStatus_temp, ifelse(Smoking == 2,
+#                                           (as.Date(consentDATE) - (Yrs.Smoked * 365.25)) - as.Date(DOB),
+#                                           with(SmokingStatus_temp, ifelse(is.na(cr_duration_smoking),
+#                                                     SmokeDuration,
+#                                                     with(SmokingStatus_temp, ifelse(as.numeric(cr_duration_smoking) > SmokeDuration,
+#                                                          as.numeric(cr_duration_smoking),
+#                                                          SmokeDuration
+#                                                          ))
+#                                         ))
+# ))
+```
+
+```{r Finalizes Smoking Exposure Dataset}
+SmokingStatus = select(SmokingStatus_temp, TransplantID, Yrs.Smoked, Avg.PPD, Pack.Years, Smoking)
+save(SmokingStatus, file = "SmokingExposure.Rda")
+```
+
+
