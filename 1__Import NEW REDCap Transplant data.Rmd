@@ -2,6 +2,9 @@
 title: "Import Current REDCap Database"
 output: html_notebook
 ---
+```{r Calls code with function definitions}
+source("Functions.R")
+```
 
 ## Imports REDCap data from new version of REDCap with survey data that was more recently captured using emailed links and phone calls.
 
@@ -53,6 +56,28 @@ NewTXP = select(work.txp3, TransplantID, Referred,DxGROUP, O2, EverSmoked.NewTXP
 NewTXP$YEARS = as.numeric(NewTXP$AgeStopSmoking.NewTXP) - as.numeric(NewTXP$AgeStartSmoking.NewTXP)
 ```
 
-
-
+```{R Data Import module - SMOKING STATUS Chart Review}
+work1.SmokingCR <- postForm(
+  uri= api_url,
+  token= txp_token,
+  content='record',
+  format='json',
+  type='flat',
+  'fields[0]'='transplant_id',
+  'fields[1]'='cr_smokingstatus',
+  'fields[2]'='cr_avg_num_daily_cigs',
+  'fields[3]'='cr_duration_smoking',
+  'events[0]'='baseline_arm_1',
+  rawOrLabel='raw',
+  rawOrLabelHeaders='raw',
+  exportCheckboxLabel='false',
+  exportSurveyFields='false',
+  exportDataAccessGroups='false',
+  returnFormat='json'
+)
+work2.SmokingCR = fromJSON(work1.SmokingCR)
+work3.SmokingCR = rename(work2.SmokingCR, TransplantID = transplant_id) #renames variable to align with other datasets
+work3.SmokingCR$Instrument = lapply(work3.SmokingCR[,"redcap_repeat_instrument"], Transform.blank.NA)
+work4.SmokingCR = select( subset( work3.SmokingCR, !is.na(work3.SmokingCR$Instrument) ), -Instrument, -redcap_repeat_instrument, -redcap_repeat_instance, -redcap_event_name) #drops unused var-names #only keeps lines with data
+```
 
